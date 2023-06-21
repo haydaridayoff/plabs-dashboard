@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import SidebarNavItem from "./SidebarNavItem";
-import icons from "../../assets/icons/icons";
 import SidebarNavItems from "../../model/Sidebar/SidebarNavItems";
 
 const SidebarNav: React.FC = (props) => {
@@ -19,7 +18,7 @@ const SidebarNav: React.FC = (props) => {
   }
 
   return (
-    <nav className="flex m-5 w-[190px] h-[648px] left-0 top-[72px] outline outline-offset-2 outline-blue-500">
+    <nav className="flex m-5 w-[190px] h-[648px] left-0 top-[72px]">
       <ul className="flex flex-col w-full h-full">
         {SidebarNavItems.map((item) => (
           <SidebarNavItem
