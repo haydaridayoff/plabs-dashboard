@@ -8,7 +8,7 @@ const Sidebar: FC = (props) => {
       <SidebarNav />
       <button className="flex justify-evenly m-6 p-3 gap-16 rounded hover:bg-[#4487D9] text-[#989898] hover:text-white hover:font-bold">
         <div>Logout</div>
-        <img src={icons.logout} alt="Logout" />
+        <img src={icons.logout.gray as string} alt="Logout" />
       </button>
     </div>
   );

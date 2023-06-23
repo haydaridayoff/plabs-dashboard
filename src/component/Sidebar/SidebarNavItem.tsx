@@ -1,39 +1,33 @@
 import React, { FC } from "react";
+import { NavLink } from "react-router-dom";
+import { NavItems } from "../../model/Sidebar/SidebarNavItems";
 
 interface Props {
-  icon: string;
-  title: string;
-  isActive?: boolean;
+  navItem: NavItems;
   onClick?: () => void;
 }
 
+interface StyleProps {
+  isActive : boolean;
+  isPending : boolean;
+}
+
 const SidebarNavItem: FC<Props> = (props) => {
-  let className =
+  let defaultStyle =
     "flex flex-start mb- w-full px-3 py-2 gap-2 rounded text-[#989898]";
 
-  const classesNames = className.split(" ");
-  if (props.isActive) {
-    //remove "text-[#989898]" element from classesNames array
-    classesNames.splice(
-      classesNames.indexOf("text-[#989898]"),
-      1,
-      "text-white"
-    );
+  let activeStyle = "flex flex-start mb- w-full px-3 py-2 gap-2 rounded text-white bg-[#4487D9] font-bold";
 
-    classesNames.push("bg-[#4487D9]");
-    classesNames.push("font-bold");
-  }
+  const classNameHandler : ((styleprops:StyleProps) => string) = ({isActive}) =>{
+    return isActive ? activeStyle : defaultStyle;
+  };
 
   return (
-    <li>
-      <button
-        onClick={props.onClick ? props.onClick : () => {}}
-        className={classesNames.join(" ")}
-      >
-        <img className="w-[24px] h-[24px]" src={props.icon} alt="Home" />
-        <div>{props.title}</div>
-      </button>
-    </li>
+      <NavLink onClick={props.onClick} to={props.navItem.path} className={classNameHandler}>
+        {(!props.navItem.isActive) && <img className="w-[24px] h-[24px]" src={props.navItem.icon.gray} alt={props.navItem.title} />}
+        {(props.navItem.isActive) && <img className="w-[24px] h-[24px]" src={props.navItem.icon.white} alt={props.navItem.title} />}
+        <div>{props.navItem.title}</div>
+      </NavLink>
   );
 };
 

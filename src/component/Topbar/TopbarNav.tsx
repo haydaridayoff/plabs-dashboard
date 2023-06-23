@@ -1,22 +1,15 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import icons from "../../assets/icons/icons";
+import sidebarContext from "../Sidebar/sidebar-context";
+import TopbarNavItem from "./TopbarNavItem";
 
 interface Props {}
 
 const TopbarNav: FC<Props> = (props) => {
+  const sidebar = useContext(sidebarContext);
   return (
-    <nav>
-      <ul className="flex justify-start items-center h-full w-auto ml-7 gap-3 text-lg font-semibold">
-        <li>
-          <button className="hover:underline hover:text-[#4487D9]">Home</button>
-        </li>
-        <img src={icons.navSeparator} alt="seperate" />
-        <li className="">
-          <button className="hover:underline hover:text-[#4487D9]">
-            Shakda
-          </button>
-        </li>
-      </ul>
+    <nav className="flex justify-start items-center h-full w-auto ml-7 gap-3 text-lg font-semibold">
+      {sidebar.navItemsStatus.filter((item) => item.isActive).map((item) => <TopbarNavItem key={item.title} navItem={item} />)}
     </nav>
   );
 };

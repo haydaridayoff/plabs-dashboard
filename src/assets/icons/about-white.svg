@@ -1,0 +1,13 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Material-Twotone" clip-path="url(#clip0_351_5131)">
+<path id="Vector" d="M17.0002 15H19.0002V17H17.0002V15ZM17.0002 11H19.0002V13H17.0002V11ZM17.0002 7H19.0002V9H17.0002V7ZM13.7402 7L15.0002 7.84V7H13.7402Z" fill="#989898"/>
+<path id="Vector_2" d="M10 3V4.51L12 5.84V5H21V19H17V21H23V3H10Z" fill="white"/>
+<path id="Vector_3" d="M8.17 5.7L15 10.25V21H1V10.48L8.17 5.7ZM10 19H13V11.16L8.17 8.09L3 11.38V19H6V13H10V19Z" fill="white"/>
+<path id="Vector_4" opacity="0.3" d="M10 19H13V11.16L8.17 8.09L3 11.38V19H6V13H10V19Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_351_5131">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>
