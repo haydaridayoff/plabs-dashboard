@@ -7,7 +7,7 @@ const SidebarLogo: React.FC = (props) => {
   const sidebar = useContext(SidebarContext);
 
   return (
-    <section className="flex items-center justify-evenly outline outline-1 outline-gray-200 w-full h-20 min-h-[5rem]">
+    <section className="flex items-center justify-evenly outline outline-1 outline-gray-200 w-full h-20 min-h-[rem]">
       {(!sidebar.isMinimized || sidebar.isMouseHover) && (
         <img className="w-36 h-auto" src={images.logoHitam183} alt="Logo" />
       )}
