@@ -5,7 +5,6 @@ import Topbar from "../component/Topbar/Topbar";
 const Home = () => {
     return (
         <SidebarContextProvider>
-            <Topbar />
         </SidebarContextProvider>
     );
 }

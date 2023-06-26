@@ -1,11 +1,11 @@
 import React from "react";
-import TopbarLogo from "./TopbarLogo";
 import TopbarNav from "./TopbarNav";
 
 const Topbar: React.FC = (props) => {
+  let topbarStyle = "flex w-full h-20 shadow";
+
   return (
-    <header className="fixed flex w-full h-[72px] shadow">
-      <TopbarLogo />
+    <header className={topbarStyle}>
       <TopbarNav />
     </header>
   );

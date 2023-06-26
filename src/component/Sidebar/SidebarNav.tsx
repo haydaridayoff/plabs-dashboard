@@ -1,38 +1,23 @@
 //create a new component called SidebarNav
 
 import React, { useContext, useState } from "react";
-import SidebarNavItem from "./SidebarNavItem";
-import SidebarNavItems from "../../model/Sidebar/SidebarNavItems";
 import { NavLink } from "react-router-dom";
+import SidebarNavItems from "../../model/Sidebar/SidebarNavItems";
 import SidebarContext from "./sidebar-context";
-
-
-
+import SidebarNavItem from "./SidebarNavItem";
 
 const SidebarNav: React.FC = (props) => {
-  // const activeStatusItems: boolean[] = SidebarNavItems.map((item) => false);
-  // activeStatusItems[0] = true;
-
-  // const [activeItems, setActiveItems] = useState<boolean[]>(activeStatusItems);
-
-  // function activeItemHandler(index: number): void {
-  //   const newActiveItems: boolean[] = [...activeItems];
-  //   newActiveItems.fill(false);
-  //   newActiveItems[index] = true;
-  //   setActiveItems(newActiveItems);
-  // }
-
   const sidebar = useContext(SidebarContext);
 
   return (
-    <nav className="flex flex-col m-5 w-[190px] h-[648px] left-0 top-[72px]">
-        {sidebar.navItemsStatus.map((item) => (
-          <SidebarNavItem
-            key={item.title}
-            navItem={item}
-            onClick={() => sidebar.setActiveItems(item)}
-          />
-        ))}
+    <nav className="flex flex-col m-5 w-4/5 left-0 top-[72px]">
+      {sidebar.navItemsStatus.map((item) => (
+        <SidebarNavItem
+          key={item.id}
+          navItem={item}
+          onClick={() => sidebar.setActiveItems(item)}
+        />
+      ))}
     </nav>
   );
 };
