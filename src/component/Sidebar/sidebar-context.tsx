@@ -16,21 +16,16 @@ interface State {
 interface Action {
   type: string;
 }
-
-const SidebarContext = React.createContext({
-  navItemsStatus: {} as NavItems[],
+const initialState: State = {
   isMinimized: false,
   isMouseHover: false,
-  setActiveItems: (items: NavItems) => {},
-  toggleIsMinimized: () => {},
-  setOnMouseEnter: () => {},
-  setOnMouseLeave: () => {},
-});
+  sidebarOpen: true,
+};
 
 const checkSubNav = (items: NavItems) => {
   if (items.subNav) {
     items.subNav.map((subNavItem) => {
-      if (subNavItem.title !== items.title) {
+      if (subNavItem.id !== items.id) {
         subNavItem.isActive = false;
         items.isActive = false;
       } else {
@@ -46,6 +41,7 @@ const checkSubNav = (items: NavItems) => {
 
 const reducer = (state: State, action: Action) => {
   let tempState;
+  console.log(state);
   switch (action.type) {
     case "TOGGLE_MINIMIZE":
       tempState = {
@@ -77,11 +73,21 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
   const [navItemsStatus, setNavItemsStatus] =
     useState<NavItems[]>(SidebarNavItems);
 
-  const initialState: State = {
-    isMinimized: false,
-    isMouseHover: false,
-    sidebarOpen: false,
-  };
+  const [state, dispatch] = useReducer<Reducer<State, Action>, State>(
+    reducer,
+    initialState,
+    (init) => {
+      if (localStorage.getItem("sidebar-state")) {
+        const tempState: State = JSON.parse(
+          localStorage.getItem("sidebar-state") || "",
+        );
+        init.isMinimized = tempState.isMinimized;
+        init.isMouseHover = tempState.isMouseHover;
+        init.sidebarOpen = tempState.sidebarOpen;
+      }
+      return init;
+    },
+  );
 
   useEffect(() => {
     setActiveItemsHandler(
@@ -89,23 +95,12 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
         (item) => item.path === window.location.pathname,
       ) as NavItems,
     );
-    if (localStorage.getItem("sidebar-state")) {
-      const tempState: State = JSON.parse(
-        localStorage.getItem("sidebar-state") || "",
-      );
-      initialState.isMinimized = tempState.isMinimized;
-      initialState.isMouseHover = tempState.isMouseHover;
-      initialState.sidebarOpen = tempState.sidebarOpen;
-    }
   }, []);
 
-  const [state, dispatch] = useReducer<Reducer<State, Action>, State>(
-    reducer,
-    initialState,
-    (init) => {
-      return init;
-    },
-  );
+  useEffect(() => {
+    localStorage.setItem("sidebar-state", JSON.stringify(state));
+  }, [state.isMinimized, state.isMouseHover, state.sidebarOpen]);
+
   const setActiveItemsHandler = (item: NavItems) => {
     const newNavItemsStatus = navItemsStatus.map((navItem) => {
       if (navItem.id !== item.id) {
@@ -131,10 +126,6 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
     setOnMouseLeave: dispatch.bind(null, { type: "MOUSE_LEAVE" }),
   };
 
-  useEffect(() => {
-    localStorage.setItem("sidebar-state", JSON.stringify(state));
-  }, [state.isMinimized, state.isMouseHover, state.sidebarOpen]);
-
   return (
     <SidebarContext.Provider value={contextValue}>
       <Sidebar />
@@ -142,5 +133,15 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
     </SidebarContext.Provider>
   );
 };
+
+const SidebarContext = React.createContext({
+  navItemsStatus: {} as NavItems[],
+  isMinimized: initialState.isMinimized,
+  isMouseHover: initialState.isMouseHover,
+  setActiveItems: (items: NavItems) => {},
+  toggleIsMinimized: () => {},
+  setOnMouseEnter: () => {},
+  setOnMouseLeave: () => {},
+});
 
 export default SidebarContext;
