@@ -4,7 +4,11 @@ import sidebarContext from "./sidebar-context";
 import SidebarLogo from "./SidebarLogo";
 import SidebarNav from "./SidebarNav";
 
-const Sidebar: FC = (props) => {
+interface Props {
+  children?: React.ReactNode;
+}
+
+const Sidebar: FC<Props> = (props) => {
   const sidebar = useContext(sidebarContext);
 
   console.log(sidebar);

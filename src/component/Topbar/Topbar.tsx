@@ -6,7 +6,7 @@ const Topbar: React.FC = (props) => {
   const sidebar = useContext(SidebarContext);
 
   let topbarStyle =
-    "fixed flex w-full h-20 left-[230px] shadow transition-all ease-in-out duration-300";
+    "fixed flex w-full h-20 left-[230px] top-0 bg-white shadow transition-all ease-in-out duration-300";
 
   if (sidebar.isMinimized) {
     topbarStyle = topbarStyle.replace("left-[230px]", "left-[60px]");
