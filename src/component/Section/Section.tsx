@@ -1,19 +1,54 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
+import icons from "../../assets/icons/icons";
 
-interface Props {
-  children?: React.ReactNode;
+interface Props extends PropsWithChildren {
   className?: string;
   isLast?: boolean;
+  isEditing?: boolean;
+  onEditToggle?: () => void;
+  onSubmit?: () => void;
   title: string;
 }
 
 const Section: React.FC<Props> = (props) => {
-  let sectionStyle = "";
+  let sectionStyle = `flex flex-col border-b-2 border-gray-300 pb-6 ${props.className}`;
+  if (props.isLast) {
+    sectionStyle = sectionStyle.replace("border-b-2 border-gray-300 pb-6", "");
+  }
 
   return (
-    <section className={`${props.className}`}>
-      <h2>{props.title}</h2>
-      {props.children}
+    <section className={sectionStyle}>
+      <div className="flex justify-between items-center">
+        <h2 className="font-bold text-base">{props.title}</h2>
+        <button
+          type="button"
+          onClick={props.onEditToggle ? props.onEditToggle : () => {}}
+          className="flex gap-2"
+        >
+          <img
+            src={!props.isEditing ? icons.edit.gray : icons.cancelEdit.orange}
+            alt="edit"
+          />
+          <span
+            style={!props.isEditing ? {} : { color: "#FE7E30" }}
+            className="text-sm text-[#989898]"
+          >
+            {!props.isEditing ? "Edit" : "Cancel"}
+          </span>
+        </button>
+      </div>
+      <form
+        className="flex flex-col"
+        onSubmit={props.onSubmit ? props.onSubmit : () => {}}
+      >
+        {props.children}
+        <button
+          type="submit"
+          className="w-24 rounded-md bg-[#0AB663] text-[#FAFAFA] shadow-sm px-4 py-2 mt-4 self-start"
+        >
+          Save
+        </button>
+      </form>
     </section>
   );
 };
