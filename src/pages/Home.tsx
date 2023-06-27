@@ -16,6 +16,16 @@ const Home = () => {
           <Section title={"Hero"}>
             <InputField value="We are on a mission to evolve your business by simplifying every development process on all touchpoint." />
           </Section>
+          <Section title={"Section 1"}>
+            <InputField
+              label="Title"
+              value="We are on a mission to evolve your business by simplifying every development process on all touchpoint."
+            />
+            <InputField
+              label="Title"
+              value="We are on a mission to evolve your business by simplifying every development process on all touchpoint."
+            />
+          </Section>
         </Card>
       </Content>
       <Topbar />

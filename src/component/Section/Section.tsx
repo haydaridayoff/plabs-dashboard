@@ -11,14 +11,15 @@ interface Props extends PropsWithChildren {
 }
 
 const Section: React.FC<Props> = (props) => {
-  let sectionStyle = `flex flex-col border-b-2 border-gray-300 pb-6 ${props.className}`;
+  let sectionStyle = "flex flex-col border-b-2 border-[#D9D9D9] pb-6 mb-6";
+
   if (props.isLast) {
     sectionStyle = sectionStyle.replace("border-b-2 border-gray-300 pb-6", "");
   }
 
   return (
-    <section className={sectionStyle}>
-      <div className="flex justify-between items-center">
+    <section className={sectionStyle + " " + props.className}>
+      <div className="flex justify-between items-center mb-4">
         <h2 className="font-bold text-base">{props.title}</h2>
         <button
           type="button"
@@ -42,12 +43,14 @@ const Section: React.FC<Props> = (props) => {
         onSubmit={props.onSubmit ? props.onSubmit : () => {}}
       >
         {props.children}
-        <button
-          type="submit"
-          className="w-24 rounded-md bg-[#0AB663] text-[#FAFAFA] shadow-sm px-4 py-2 mt-4 self-start"
-        >
-          Save
-        </button>
+        {props.isEditing && (
+          <button
+            type="submit"
+            className="w-24 rounded-md bg-[#0AB663] text-center text-sm font-semibold font text-[#FAFAFA] shadow-sm px-4 py-2 mt-4 self-start"
+          >
+            Save
+          </button>
+        )}
       </form>
     </section>
   );
