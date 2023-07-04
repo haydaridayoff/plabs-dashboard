@@ -10,8 +10,6 @@ const Content: React.FC<Props> = (props) => {
 
   let mainStyle =
     "absolute p-6 left-[230px] top-20 right-0 bg-[#C1D7F2] font-jakarta transition-all ease-in-out duration-300";
-
-  console.log("sidebar.isMinimized: ", sidebar.isMinimized);
   if (sidebar.isMinimized) {
     mainStyle = mainStyle.replace("left-[230px]", "left-[60px]");
   }

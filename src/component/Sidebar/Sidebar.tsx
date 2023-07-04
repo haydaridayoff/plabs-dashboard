@@ -10,8 +10,6 @@ interface Props {
 
 const Sidebar: FC<Props> = (props) => {
   const sidebar = useContext(sidebarContext);
-
-  console.log(sidebar);
   let sidebarStyle =
     "fixed flex flex-col items-center w-[230px] left-0 top-0 bottom-0 shadow z-10 transition-all duration-500 ease-in-out bg-white overflow-hidden font-jakarta";
   let buttonStyle =

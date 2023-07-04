@@ -41,7 +41,6 @@ const checkSubNav = (items: NavItems) => {
 
 const reducer = (state: State, action: Action) => {
   let tempState;
-  console.log(state);
   switch (action.type) {
     case "TOGGLE_MINIMIZE":
       tempState = {

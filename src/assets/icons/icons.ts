@@ -37,10 +37,21 @@ const icons = {
     gray: require("./ecosystem.svg").default,
     white: require("./ecosystem-white.svg").default,
   },
+  eye: {
+    on: {
+      gray: require("./eye-on-gray.svg").default,
+      black: require("./eye-on-black.svg").default,
+    },
+    off: {
+      gray: require("./eye-off-gray.svg").default,
+      black: require("./eye-off-black.svg").default,
+    },
+  },
   burger: { gray: require("./burger.svg").default },
   navSeparator: { gray: require("./nav-separator.svg").default },
   edit: { gray: require("./edit.svg").default },
   cancelEdit: { orange: require("./cancel-edit.svg").default },
+  loginBg: { gray: require("./login-bg.svg").default },
 };
 
 export default icons;

@@ -1,14 +1,9 @@
 import React from "react";
-import {SidebarContextProvider} from "../component/Sidebar/sidebar-context";
-import { isTemplateLiteralTypeSpan } from "typescript";
+import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import Topbar from "../component/Topbar/Topbar";
 
 const About = () => {
-    return (
-        <SidebarContextProvider>
-            <Topbar />
-        </SidebarContextProvider>
-    );
-}
+  return <></>;
+};
 
 export default About;
