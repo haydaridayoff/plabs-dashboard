@@ -3,10 +3,6 @@ import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import Topbar from "../component/Topbar/Topbar";
 
 const Project = () => {
-  return (
-    <SidebarContextProvider>
-      <Topbar />
-    </SidebarContextProvider>
-  );
+  return <></>;
 };
 export default Project;

@@ -1,5 +1,3 @@
-import { read } from "fs";
-import { isError } from "util";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import icons from "../../assets/icons/icons";
 
@@ -63,7 +61,7 @@ const InputField: React.FC<Props> = (props) => {
         </label>
       )}
       <div
-        className={`flex border border-[#BABABA] bg-[#FAFAFA] rounded-md mt-2 py-3 px-4 text-[#666666] focus-within:border-[#4487D9] focus:outline-none ${props.inputStyle}`}
+        className={`flex border border-[#BABABA] bg-[#FFFFFF] rounded-md mt-2 py-3 px-4 text-[#666666] focus-within:border-[#4487D9] focus:outline-none ${props.inputStyle}`}
         style={
           props.isError
             ? { border: "1px solid red" }

@@ -125,19 +125,21 @@ const Login = () => {
     loginIsValid: false,
   });
 
-  const {
-    username,
-    usernameIsValid,
-    usernameError,
-    password,
-    passwordIsValid,
-    passwordError,
-    loginIsValid,
-  } = loginState;
-
   function loginHandler(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    window.location.href = "/";
+    if (loginState.loginIsValid) {
+      localStorage.setItem("token", `${Math.ceil(Math.random() * 10000)}`);
+      window.location.href = "/";
+    } else {
+      setLoginState({
+        type: loginActionType.SET_USERNAMEERROR,
+        payload: loginState.username,
+      });
+      setLoginState({
+        type: loginActionType.SET_PASSWORDERROR,
+        payload: loginState.password,
+      });
+    }
   }
   const [isUsernameFocus, setIsUsernameFocus] = useState(false);
   const [isPasswordFocus, setIsPasswordFocus] = useState(false);
@@ -197,7 +199,7 @@ const Login = () => {
                     payload: "",
                   });
                 }}
-                textHelper={usernameError}
+                textHelper={loginState.usernameError}
               ></InputField>
               <InputField
                 label="Password"
@@ -214,7 +216,7 @@ const Login = () => {
                 onFocus={(event) => {
                   setIsPasswordFocus(true);
                 }}
-                isError={passwordError !== "" && !isPasswordFocus}
+                isError={loginState.passwordError !== "" && !isPasswordFocus}
                 onChange={(event) => {
                   setLoginState({
                     type: loginActionType.SET_PASSWORD,
@@ -225,12 +227,12 @@ const Login = () => {
                     payload: "",
                   });
                 }}
-                textHelper={passwordError}
+                textHelper={loginState.passwordError}
               ></InputField>
               <button
                 type="submit"
                 className="rounded w-full h-12 mt-6 bg-[#4487D9] text-white font-jakarta text-sm font-semibold disabled:bg-[#C2C2C2] disabled:cursor-not-allowed"
-                disabled={!loginIsValid}
+                disabled={!loginState.loginIsValid}
               >
                 Login
               </button>

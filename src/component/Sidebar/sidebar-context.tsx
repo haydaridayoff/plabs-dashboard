@@ -1,5 +1,10 @@
-import { stat } from "fs";
-import React, { Reducer, useEffect, useReducer, useState } from "react";
+import React, {
+  Reducer,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import SidebarNavItems, { NavItems } from "../../model/Sidebar/SidebarNavItems";
 import Sidebar from "./Sidebar";
 
@@ -16,6 +21,7 @@ interface State {
 interface Action {
   type: string;
 }
+
 const initialState: State = {
   isMinimized: false,
   isMouseHover: false,
@@ -72,20 +78,9 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
   const [navItemsStatus, setNavItemsStatus] =
     useState<NavItems[]>(SidebarNavItems);
 
-  const [state, dispatch] = useReducer<Reducer<State, Action>, State>(
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(
     reducer,
     initialState,
-    (init) => {
-      if (localStorage.getItem("sidebar-state")) {
-        const tempState: State = JSON.parse(
-          localStorage.getItem("sidebar-state") || "",
-        );
-        init.isMinimized = tempState.isMinimized;
-        init.isMouseHover = tempState.isMouseHover;
-        init.sidebarOpen = tempState.sidebarOpen;
-      }
-      return init;
-    },
   );
 
   useEffect(() => {

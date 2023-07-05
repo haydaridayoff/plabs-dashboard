@@ -6,7 +6,7 @@ interface Props extends PropsWithChildren {
   isLast?: boolean;
   isEditing?: boolean;
   onEditToggle?: () => void;
-  onSubmit?: () => void;
+  onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
   title: string;
 }
 

@@ -26,6 +26,15 @@ const Sidebar: FC<Props> = (props) => {
     sidebar.setOnMouseLeave();
     console.log("mouse leave");
   };
+
+  const logoutHandler = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    event.preventDefault();
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
   return (
     <div
       className={sidebarStyle}
@@ -34,7 +43,7 @@ const Sidebar: FC<Props> = (props) => {
     >
       <SidebarLogo />
       <SidebarNav />
-      <button className={buttonStyle}>
+      <button className={buttonStyle} onClick={logoutHandler}>
         {(!sidebar.isMinimized || sidebar.isMouseHover) && <div>Logout</div>}
         <img
           className="h-6 w-6"

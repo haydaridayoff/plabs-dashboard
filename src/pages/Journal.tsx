@@ -3,11 +3,7 @@ import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import Topbar from "../component/Topbar/Topbar";
 
 const Journal = () => {
-  return (
-    <SidebarContextProvider>
-      <Topbar />
-    </SidebarContextProvider>
-  );
+  return <></>;
 };
 
 export default Journal;
