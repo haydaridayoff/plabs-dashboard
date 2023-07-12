@@ -1,15 +1,16 @@
 import icons from "../../assets/icons/icons";
 
-export interface NavItems {
+interface navItem {
   id: string;
   title: string;
   path: string;
+  param?: { [key: string]: string };
   icon: any;
   isActive: boolean;
-  subNav?: NavItems[];
+  subNav?: navItem[];
 }
 
-const SidebarNavItems: NavItems[] = [
+const sidebarNavItems: navItem[] = [
   {
     id: "home",
     title: "Home",
@@ -32,9 +33,12 @@ const SidebarNavItems: NavItems[] = [
     isActive: false,
     subNav: [
       {
-        id: "project dashboard",
+        id: "project-dashboard",
         title: "Dashboard",
-        path: "/",
+        path: "",
+        param: {
+          tabStatus: "dashboard",
+        },
         icon: icons.project,
         isActive: false,
       },
@@ -48,30 +52,42 @@ const SidebarNavItems: NavItems[] = [
     isActive: false,
     subNav: [
       {
-        id: "about about",
+        id: "about-about",
         title: "About",
-        path: "/",
+        path: "",
+        param: {
+          tabStatus: "about",
+        },
         icon: icons.about,
         isActive: false,
       },
       {
-        id: "about ecosystem",
+        id: "about-ecosystem",
         title: "Ecosystem",
-        path: "/ecosystem",
+        path: "",
+        param: {
+          tabStatus: "ecosystem",
+        },
         icon: icons.about,
         isActive: false,
       },
       {
-        id: "about partner",
+        id: "about-partner",
         title: "Partner",
-        path: "/partner",
+        path: "",
+        param: {
+          tabStatus: "partner",
+        },
         icon: icons.about,
         isActive: false,
       },
       {
-        id: "about people",
+        id: "about-people",
         title: "People",
-        path: "/people",
+        path: "",
+        param: {
+          tabStatus: "people",
+        },
         icon: icons.about,
         isActive: false,
       },
@@ -92,23 +108,32 @@ const SidebarNavItems: NavItems[] = [
     isActive: false,
     subNav: [
       {
-        id: "career career",
+        id: "career-career",
         title: "Career",
-        path: "/",
+        path: "",
+        param: {
+          tabStatus: "career",
+        },
         icon: icons.career,
         isActive: false,
       },
       {
-        id: "career job",
+        id: "career-job",
         title: "Job",
-        path: "/job",
+        path: "",
+        param: {
+          tabStatus: "job",
+        },
         icon: icons.career,
         isActive: false,
       },
       {
-        id: "career applicant",
+        id: "career-applicant",
         title: "Applicant",
-        path: "/applicant",
+        path: "",
+        param: {
+          tabStatus: "applicant",
+        },
         icon: icons.career,
         isActive: false,
       },
@@ -129,23 +154,32 @@ const SidebarNavItems: NavItems[] = [
     isActive: false,
     subNav: [
       {
-        id: "ecosystem client",
+        id: "ecosystem-client",
         title: "Client",
-        path: "/",
+        path: "",
+        param: {
+          tabStatus: "client",
+        },
         icon: icons.ecosystem,
         isActive: false,
       },
       {
-        id: "ecosystem ecosystem",
+        id: "ecosystem-ecosystem",
         title: "Ecosystem",
-        path: "/ecosystem",
+        path: "",
+        param: {
+          tabStatus: "ecosystem",
+        },
         icon: icons.ecosystem,
         isActive: false,
       },
       {
-        id: "ecosystem partner",
+        id: "ecosystem-partner",
         title: "Partner",
-        path: "/partner",
+        path: "",
+        param: {
+          tabStatus: "partner",
+        },
         icon: icons.ecosystem,
         isActive: false,
       },
@@ -160,4 +194,5 @@ const SidebarNavItems: NavItems[] = [
   },
 ];
 
-export default SidebarNavItems;
+export default sidebarNavItems;
+export type { navItem };

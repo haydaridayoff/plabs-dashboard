@@ -1,9 +1,9 @@
 import { NavLink } from "react-router-dom";
 import icons from "../../assets/icons/icons";
-import { NavItems } from "../../model/Sidebar/SidebarNavItems";
+import { navItem } from "../../model/Sidebar/SidebarNavItems";
 
 interface Props {
-  navItem: NavItems;
+  navItem: navItem;
 }
 
 const TopbarNavItem: React.FC<Props> = (props) => {

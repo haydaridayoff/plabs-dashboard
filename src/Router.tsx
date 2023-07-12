@@ -35,6 +35,11 @@ const router = createBrowserRouter([
       {
         path: "project",
         element: <Project />,
+        children: [
+          {
+            path: "?tabStatus=:tabStatus",
+          },
+        ],
       },
       {
         path: "work",
@@ -43,6 +48,11 @@ const router = createBrowserRouter([
       {
         path: "career",
         element: <Career />,
+        children: [
+          {
+            path: "?tabStatus=:tabStatus",
+          },
+        ],
       },
       {
         path: "contact",
@@ -51,6 +61,11 @@ const router = createBrowserRouter([
       {
         path: "ecosystem",
         element: <Ecosystem />,
+        children: [
+          {
+            path: "?tabStatus=:tabStatus",
+          },
+        ],
       },
       {
         path: "journal",

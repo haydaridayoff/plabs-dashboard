@@ -1,3 +1,4 @@
+import { eventNames } from "process";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import icons from "../../assets/icons/icons";
 
@@ -20,17 +21,10 @@ interface Props {
 }
 
 const InputField: React.FC<Props> = (props) => {
-  let readOnly = props.readOnly !== undefined ? props.readOnly : false;
-  let value = props.value !== undefined ? props.value : undefined;
-  let placeholder =
-    props.placeholder !== undefined
-      ? props.placeholder
-      : props.value !== undefined
-      ? props.value
-      : undefined;
-
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  let value = props.value ? props.value : undefined;
+  let readOnly = props.readOnly !== undefined ? props.readOnly : false;
 
   const togglePasswordVisible = () => {
     setIsVisible(!isVisible);
@@ -52,6 +46,13 @@ const InputField: React.FC<Props> = (props) => {
       }
     }
   }, [isFocus]);
+
+  function inputChangeHandler(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void {
+    inputRef.current?.setAttribute("value", event.currentTarget.value);
+    props.onChange && props.onChange(event);
+  }
 
   return (
     <>
@@ -78,6 +79,7 @@ const InputField: React.FC<Props> = (props) => {
         <input
           id={props.id}
           ref={inputRef}
+          value={value}
           onFocus={(e) => {
             setIsFocus(true);
             if (props.onFocus) props.onFocus(e);
@@ -86,14 +88,13 @@ const InputField: React.FC<Props> = (props) => {
             setIsFocus(false);
             if (props.onBlur) props.onBlur(e);
           }}
-          name={props.name ? props.name : undefined}
+          name={props.name ? props.name : ""}
           className="border-none focus:outline-none w-full flex-grow bg-transparent"
           type={props.type ? props.type : "text"}
-          value={readOnly ? value : undefined}
           readOnly={readOnly}
-          placeholder={placeholder}
+          placeholder={props.placeholder ? props.placeholder : ""}
           style={readOnly ? {} : { color: "black" }}
-          onChange={props.onChange ? props.onChange : () => {}}
+          onChange={inputChangeHandler}
         />
         {props.type === "password" && !isVisible && (
           <button onClick={togglePasswordVisible}>

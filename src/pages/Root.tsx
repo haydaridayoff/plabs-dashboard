@@ -9,10 +9,13 @@ const Journal = () => {
   }
 
   return (
-    <SidebarContextProvider>
-      <Outlet />
-      <Topbar />
-    </SidebarContextProvider>
+    <>
+      <div className="bg-[#F4F9FF] fixed h-screen w-screen bg-fixed bg-center bg-no-repeat bg-cover"></div>
+      <SidebarContextProvider>
+        <Outlet />
+        <Topbar />
+      </SidebarContextProvider>
+    </>
   );
 };
 

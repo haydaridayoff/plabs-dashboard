@@ -1,5 +1,4 @@
 import React, { FC, useContext } from "react";
-import icons from "../../assets/icons/icons";
 import sidebarContext from "../Sidebar/sidebar-context";
 import TopbarNavItem from "./TopbarNavItem";
 

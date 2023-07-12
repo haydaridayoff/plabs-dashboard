@@ -1,8 +1,6 @@
 //create a new component called SidebarNav
 
-import React, { useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
-import SidebarNavItems from "../../model/Sidebar/SidebarNavItems";
+import React, { useContext } from "react";
 import SidebarContext from "./sidebar-context";
 import SidebarNavItem from "./SidebarNavItem";
 
@@ -15,7 +13,16 @@ const SidebarNav: React.FC = (props) => {
         <SidebarNavItem
           key={item.id}
           navItem={item}
-          onClick={() => sidebar.setActiveItems(item)}
+          onClick={() =>
+            sidebar.setActiveItems(
+              0,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              item.id,
+            )
+          }
         />
       ))}
     </nav>

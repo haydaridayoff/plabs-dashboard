@@ -1,10 +1,10 @@
 import React, { FC, useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { NavItems } from "../../model/Sidebar/SidebarNavItems";
+import { navItem } from "../../model/Sidebar/SidebarNavItems";
 import SidebarContext from "./sidebar-context";
 
 interface Props {
-  navItem: NavItems;
+  navItem: navItem;
   onClick?: () => void;
 }
 

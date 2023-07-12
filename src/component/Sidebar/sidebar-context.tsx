@@ -1,11 +1,19 @@
+import { get } from "http";
 import React, {
   Reducer,
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   useState,
 } from "react";
-import SidebarNavItems, { NavItems } from "../../model/Sidebar/SidebarNavItems";
+import {
+  getNavItem,
+  getNavItems,
+  getNestedItems,
+  resetActiveItems,
+} from "../../api/NavItem";
+import sidebarNavItems, { navItem } from "../../model/Sidebar/SidebarNavItems";
 import Sidebar from "./Sidebar";
 
 interface Props {
@@ -26,23 +34,6 @@ const initialState: State = {
   isMinimized: false,
   isMouseHover: false,
   sidebarOpen: true,
-};
-
-const checkSubNav = (items: NavItems) => {
-  if (items.subNav) {
-    items.subNav.map((subNavItem) => {
-      if (subNavItem.id !== items.id) {
-        subNavItem.isActive = false;
-        items.isActive = false;
-      } else {
-        subNavItem.isActive = true;
-        items.isActive = true;
-      }
-    });
-  } else {
-    items.isActive = false;
-  }
-  return items;
 };
 
 const reducer = (state: State, action: Action) => {
@@ -76,45 +67,80 @@ const reducer = (state: State, action: Action) => {
 
 export const SidebarContextProvider: React.FC<Props> = (props) => {
   const [navItemsStatus, setNavItemsStatus] =
-    useState<NavItems[]>(SidebarNavItems);
+    useState<navItem[]>(sidebarNavItems);
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(
     reducer,
     initialState,
   );
 
+  const url = new URL(window.location.href);
+  const navActiveItems = useRef<navItem[]>([]);
+
+  const getActiveId = () => {
+    const activeId: string[] = [];
+    url.pathname.split("/").forEach((path) => {
+      if (path !== "")
+        if (activeId.length <= 0) activeId.push(path);
+        else activeId.push(`${activeId[activeId.length - 1]}-${path}`);
+    });
+    if (activeId.length <= 0) activeId.push("home");
+    if (url.searchParams.get("tabStatus")) {
+      activeId.push(
+        `${activeId[activeId.length - 1]}-${url.searchParams.get("tabStatus")}`,
+      );
+    }
+    return activeId;
+  };
+
   useEffect(() => {
-    setActiveItemsHandler(
-      navItemsStatus.find(
-        (item) => item.path === window.location.pathname,
-      ) as NavItems,
-    );
+    const ids = getActiveId();
+    setActiveItems(0, undefined, undefined, undefined, undefined, ...ids);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("sidebar-state", JSON.stringify(state));
-  }, [state.isMinimized, state.isMouseHover, state.sidebarOpen]);
-
-  const setActiveItemsHandler = (item: NavItems) => {
-    const newNavItemsStatus = navItemsStatus.map((navItem) => {
-      if (navItem.id !== item.id) {
-        navItem = checkSubNav(navItem);
-        return navItem;
+  const setActiveItems = (
+    index: number = 0,
+    navItem?: navItem,
+    navItems?: navItem[],
+    subNavItems?: navItem[],
+    activeItems?: navItem[],
+    ...ids: string[]
+  ) => {
+    if (!navItem || !navItems || !activeItems || !subNavItems) {
+      activeItems = getNestedItems((index = 0), undefined, ...ids);
+      if (activeItems.length !== ids.length) {
+        console.log("error");
+        return;
       }
-      navItem.isActive = true;
-      if (navItem.subNav) {
-        navItem.subNav[0].isActive = true;
-      }
-      return navItem;
-    });
-    setNavItemsStatus(newNavItemsStatus);
+      navItems = resetActiveItems();
+      navItem = getNavItem(activeItems[index].id, navItems);
+    } else {
+      navItem = getNavItem(activeItems[index].id, subNavItems);
+    }
+    if (navItem) navItem.isActive = true;
+    subNavItems = navItem?.subNav;
+    if (navItem?.subNav && index + 1 < activeItems.length) {
+      setActiveItems(
+        index + 1,
+        navItem,
+        navItems,
+        subNavItems,
+        activeItems,
+        ...ids,
+      );
+    }
+    if (index === 0) {
+      setNavItemsStatus([...navItems]);
+      navActiveItems.current = [...activeItems];
+    }
   };
 
   const contextValue = {
     navItemsStatus: navItemsStatus,
+    navActiveItems: navActiveItems,
     isMinimized: state.isMinimized,
     isMouseHover: state.isMouseHover,
-    setActiveItems: setActiveItemsHandler,
+    setActiveItems: setActiveItems,
     toggleIsMinimized: dispatch.bind(null, { type: "TOGGLE_MINIMIZE" }),
     setOnMouseEnter: dispatch.bind(null, { type: "MOUSE_ENTER" }),
     setOnMouseLeave: dispatch.bind(null, { type: "MOUSE_LEAVE" }),
@@ -129,10 +155,18 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
 };
 
 const SidebarContext = React.createContext({
-  navItemsStatus: {} as NavItems[],
+  navItemsStatus: {} as navItem[],
+  navActiveItems: {} as React.MutableRefObject<navItem[]>,
   isMinimized: initialState.isMinimized,
   isMouseHover: initialState.isMouseHover,
-  setActiveItems: (items: NavItems) => {},
+  setActiveItems: (
+    index: number = 0,
+    navItem?: navItem,
+    navItems?: navItem[],
+    subNavItems?: navItem[],
+    activeItems?: navItem[],
+    ...ids: string[]
+  ) => {},
   toggleIsMinimized: () => {},
   setOnMouseEnter: () => {},
   setOnMouseLeave: () => {},

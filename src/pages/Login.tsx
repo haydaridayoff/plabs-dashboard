@@ -190,6 +190,7 @@ const Login = () => {
                 }}
                 isError={loginState.usernameError !== "" && !isUsernameFocus}
                 onChange={(event) => {
+                  console.log(event.target.value);
                   setLoginState({
                     type: loginActionType.SET_USERNAME,
                     payload: event.target.value,

@@ -1,17 +1,31 @@
 import React, { PropsWithChildren } from "react";
 import icons from "../../assets/icons/icons";
 
+enum SectionType {
+  Edit = "edit",
+  Add = "add",
+}
+
 interface Props extends PropsWithChildren {
   className?: string;
   isLast?: boolean;
   isEditing?: boolean;
   onEditToggle?: () => void;
   onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+  type?: string;
   title: string;
 }
 
+const isMemberOfSectionType = (type: string): type is SectionType => {
+  return Object.values(SectionType).includes(type as SectionType);
+};
+
 const Section: React.FC<Props> = (props) => {
   let sectionStyle = "flex flex-col border-b-2 border-[#D9D9D9] pb-6 mb-6";
+
+  let type = isMemberOfSectionType(props.type as string)
+    ? props.type
+    : SectionType.Edit;
 
   if (props.isLast) {
     sectionStyle = sectionStyle.replace("border-b-2 border-gray-300 pb-6", "");
@@ -34,7 +48,9 @@ const Section: React.FC<Props> = (props) => {
             style={!props.isEditing ? {} : { color: "#FE7E30" }}
             className="text-sm text-[#989898]"
           >
-            {!props.isEditing ? "Edit" : "Cancel"}
+            {type === SectionType.Edit &&
+              (!props.isEditing ? "Edit" : "Cancel")}
+            {type === SectionType.Add && "Add"}
           </span>
         </button>
       </div>
