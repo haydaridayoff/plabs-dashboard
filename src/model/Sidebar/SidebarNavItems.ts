@@ -14,7 +14,7 @@ const sidebarNavItems: navItem[] = [
   {
     id: "home",
     title: "Home",
-    path: "/",
+    path: "",
     icon: icons.home,
     isActive: false,
   },

@@ -10,7 +10,7 @@ interface Props extends PropsWithChildren {
   className?: string;
   isLast?: boolean;
   isEditing?: boolean;
-  onEditToggle?: () => void;
+  onClick?: () => void;
   onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
   type?: string;
   title: string;
@@ -37,11 +37,17 @@ const Section: React.FC<Props> = (props) => {
         <h2 className="font-bold text-base">{props.title}</h2>
         <button
           type="button"
-          onClick={props.onEditToggle ? props.onEditToggle : () => {}}
+          onClick={props.onClick ? props.onClick : () => {}}
           className="flex gap-2"
         >
           <img
-            src={!props.isEditing ? icons.edit.gray : icons.cancelEdit.orange}
+            src={
+              !props.isEditing
+                ? props.type !== SectionType.Add
+                  ? icons.edit.gray
+                  : icons.add.gray
+                : icons.cancelEdit.orange
+            }
             alt="edit"
           />
           <span

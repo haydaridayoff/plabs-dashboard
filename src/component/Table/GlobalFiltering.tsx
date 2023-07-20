@@ -7,12 +7,14 @@ type Props = {
 
 const GlobalFiltering: React.FC<Props> = (props) => {
   return (
-    <span className="flex flex-row items-center justify-between border border-gray-300 bg-[#FAFAFA] rounded-md">
+    <span className="flex flex-row items-center justify-between border border-gray-300 bg-[#FAFAFA] rounded-md placeholder:text-black">
       <input
         id="filter"
+        placeholder="Search here"
+        value={props.filter}
         className="px-2 py-1 w-full outline-none bg-transparent"
         onChange={(e) => {
-          props.setFilter(e.target.value || undefined);
+          props.setFilter(e.target.value || "");
         }}
       />
       <img src={icons.search.gray} alt="search" className="w-4 h-4 mr-2" />

@@ -25,13 +25,29 @@ const isImage = (str: string) => {
   return isDataURls(str) || isImg(str);
 };
 
-function getColumnsDef<T extends dataType>(firstData: T) {
+function getColumnsDef<T extends dataType>(
+  firstData: T,
+  onEdit: (data: T) => void,
+  onDelete: (data: T) => void,
+) {
   const col = [] as ColumnDef<T>[];
+  col.push({
+    header: "No",
+    size: 1,
+    cell: (info) => {
+      return (
+        <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
+          {info.row.index + 1}
+        </span>
+      );
+    },
+  });
   for (let key in firstData) {
     if (Object.prototype.hasOwnProperty.call(firstData, key)) {
       col.push({
         header: toTitleCase(key),
         accessorKey: key,
+        size: 500,
         cell: (info) =>
           isImage(info.row.original[key] as string) ? (
             <div className="flex justify-center items-center w-full h-20 ">
@@ -51,21 +67,22 @@ function getColumnsDef<T extends dataType>(firstData: T) {
   }
   col.push({
     header: "Actions",
+    size: 1,
     cell: (info) => (
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-center">
         <button
           onClick={() => {
-            console.log(info.row.original);
+            onEdit(info.row.original);
           }}
         >
           <img src={icons.edit.blue} className="h-6 w-6" />
         </button>
         <button
           onClick={() => {
-            console.log(info.row.original);
+            onDelete(info.row.original);
           }}
         >
-          Delete
+          <img src={icons.delete.blue} className="h-6 w-6" />
         </button>
       </div>
     ),

@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
+import SidebarContext from "../component/Sidebar/sidebar-context";
 
 const About = () => {
   // OLD CODE
   // let { search } = useLocation();
   // let query = new URLSearchParams(search);
-
+  const sidebar = useContext(SidebarContext);
   let [query, setQuery] = useSearchParams();
   const navigator = useNavigate();
   let tab = query.get("tabStatus");
@@ -14,6 +16,15 @@ const About = () => {
   useEffect(() => {
     if (!tab) {
       navigator("/about?tabStatus=about");
+      sidebar.setActiveItems(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        sidebar.navActiveItems.current[0].id,
+        sidebar.navActiveItems.current[0].subNav![0].id,
+      );
     }
   }, [tab]);
 
@@ -21,10 +32,7 @@ const About = () => {
   return (
     <>
       <Content>
-        <Link to="/about?tabStatus=about">About</Link>
-        <Link to="/about?tabStatus=ecosystem">Ecosystem</Link>
-        <Link to="/about?tabStatus=partner">Partner</Link>
-        <Link to="/about?tabStatus=people">People</Link>
+        <Card></Card>
       </Content>
     </>
   );

@@ -9,10 +9,12 @@ import {
 import React, { useState } from "react";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
+import DialogForm from "../component/Dialog/DialogForm";
 import FileInput from "../component/Input/FileInput";
 import InputField from "../component/Input/InputField";
 import TextArea from "../component/Input/TextArea";
 import Section from "../component/Section/Section";
+import BottomPagination from "../component/Table/BottomPagination";
 import GlobalFiltering from "../component/Table/GlobalFiltering";
 import TableBase from "../component/Table/TableBase";
 import homeData from "../model/MockData/homeData";
@@ -36,7 +38,7 @@ const Home = () => {
   const sectionHero = (
     <Section
       title={"Hero"}
-      onEditToggle={toggleEditing}
+      onClick={toggleEditing}
       isEditing={isEditing}
       onSubmit={submitEditHandler}
     >
@@ -57,7 +59,7 @@ const Home = () => {
   const sectionOne = (
     <Section
       title={"Section 1"}
-      onEditToggle={toggleEditing}
+      onClick={toggleEditing}
       isEditing={isEditing}
       onSubmit={submitEditHandler}
     >
@@ -142,50 +144,37 @@ const Home = () => {
   );
 
   //#region Table
-  type Data = {
-    col1: string;
-    col2: string;
-  };
-
-  let defaultData = React.useMemo<Data[]>(
-    () => [
-      {
-        col1: "Hello",
-        col2: "World",
-      },
-      {
-        col1: "react-table",
-        col2: "rocks",
-      },
-      {
-        col1: "whatever",
-        col2: "you want",
-      },
-    ],
-    [],
-  );
 
   const sectionTableOne = (
-    <Section
-      title={"Section 2"}
-      onEditToggle={toggleEditing}
-      isEditing={isEditing}
-      onSubmit={submitEditHandler}
-      type="add"
-    >
-      <GlobalFiltering filter="" setFilter={() => {}} />
-      <TableBase data={content.Project} />
+    <Section title={"Section 2"} onSubmit={submitEditHandler} type="add">
+      <TableBase
+        data={content.Project}
+        onEdit={(data) => {
+          console.log(data);
+        }}
+        onDelete={(data) => {
+          console.log(data);
+        }}
+      />
     </Section>
   );
+
   //#endregion
   return (
-    <Content>
-      <Card>
-        {sectionHero}
-        {sectionOne}
-        {sectionTableOne}
-      </Card>
-    </Content>
+    <>
+      <Content>
+        <Card>
+          {sectionHero}
+          {sectionOne}
+          {sectionTableOne}
+        </Card>
+      </Content>
+      <DialogForm
+        title="se"
+        onCancel={() => {}}
+        onConfirm={() => {}}
+      ></DialogForm>
+    </>
   );
 };
 

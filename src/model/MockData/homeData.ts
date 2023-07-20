@@ -36,7 +36,7 @@ const homeData = {
       "Specialize in delivering innovative and scalable creative & technology solutions in simplest way. We're the creative, the scientist, the engineer, and the geeks.",
     file: {
       type: "video",
-      src: "https://www.youtube.com/watch?v=9BNLSgQYaUk",
+      src: "https://www.youtube.com/watch?v=BvPwKtAAJ_M",
     },
   },
   Project: makeDummyProject(),
