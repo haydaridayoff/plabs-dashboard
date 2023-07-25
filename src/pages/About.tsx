@@ -1,18 +1,43 @@
-import React, { useContext, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import Card from "../component/Card/Card";
+import CardTabs from "../component/Card/CardTabs";
 import Content from "../component/Content/Content";
 import SidebarContext from "../component/Sidebar/sidebar-context";
+import AboutEcosystem from "./AboutEcosystem";
+import AboutMain from "./AboutMain";
 
 const About = () => {
   // OLD CODE
   // let { search } = useLocation();
   // let query = new URLSearchParams(search);
   const sidebar = useContext(SidebarContext);
-  let [query, setQuery] = useSearchParams();
+  const [query, setQuery] = useSearchParams();
   const navigator = useNavigate();
   let tab = query.get("tabStatus");
 
+  const [tabLinks, setTabLinks] = useState([
+    {
+      name: "About",
+      path: "/about?tabStatus=about",
+      isActive: false,
+    },
+    {
+      name: "Ecosystem",
+      path: "/about?tabStatus=ecosystem",
+      isActive: false,
+    },
+    {
+      name: "Partner",
+      path: "/about?tabStatus=partner",
+      isActive: false,
+    },
+    {
+      name: "People",
+      path: "/about?tabStatus=people",
+      isActive: false,
+    },
+  ]);
   useEffect(() => {
     if (!tab) {
       sidebar.setActiveItems(
@@ -28,33 +53,14 @@ const About = () => {
     }
   }, [tab]);
 
-  console.log(tab);
-  console.log(sidebar.navActiveItems.current);
+  console.log(tabLinks);
   return (
     <>
       <Content>
         <Card>
-          {sidebar.navActiveItems.current[0] &&
-            sidebar.navActiveItems.current[0].subNav &&
-            sidebar.navActiveItems.current[0].subNav.map((item) => (
-              <Link
-                key={item.id}
-                onClick={() => {
-                  sidebar.setActiveItems(
-                    0,
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
-                    sidebar.navActiveItems.current[0].id,
-                    item.id,
-                  );
-                }}
-                to={`/about?tabStatus=${item.param!["tabStatus"]}`}
-              >
-                {item.title}
-              </Link>
-            ))}
+          <CardTabs className="mb-6" items={tabLinks} />
+          {tab === "about" && <AboutMain />}
+          {tab === "ecosystem" && <AboutEcosystem />}
         </Card>
       </Content>
     </>

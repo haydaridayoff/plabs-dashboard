@@ -63,7 +63,7 @@ const TableBase: FC<Props> = (props) => {
   const { getHeaderGroups, getRowModel } = tableInstance;
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-3">
         <TopPagination
           currentPageSize={tableInstance.getState().pagination.pageSize}
           pageSizeOptions={[5, 10, 20]}
@@ -76,8 +76,8 @@ const TableBase: FC<Props> = (props) => {
           setFilter={tableInstance.setGlobalFilter}
         />
       </div>
-      <table className="w-full">
-        <thead className="w-full">
+      <table className="flex-grow-0">
+        <thead className="flex-none">
           {getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
@@ -115,19 +115,29 @@ const TableBase: FC<Props> = (props) => {
             </tr>
           ))}
         </thead>
-        <tbody className="">
+        <tbody className="min-h-[4px] max-h-[4px] h-1">
           {getRowModel().rows.map((row) => (
+            //get last row in every page have to have bottom border
             <tr
               key={row.id}
-              className={`${
-                row.index === props.data.length - 1
-                  ? "border-y-2"
-                  : "border-t-2"
-              }
-              border-[#D9D9D9]`}
+              className={`min-h-[4px] max-h-[4px] h-1 pt-6 flex-grow-0 font-jakarta text-left border-[#D9D9D9] border-t-2 ${
+                (row.index + 1) % tableInstance.getRowModel().rows.length === 0
+                  ? "border-b-2"
+                  : ""
+              }`}
             >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  key={cell.id}
+                  className="px-3 min-h-[4px] max-h-[4px] h-1"
+                  {...{
+                    style: {
+                      width: cell.column.columnDef.size,
+                      maxWidth: cell.column.columnDef.maxSize,
+                      minWidth: cell.column.columnDef.minSize,
+                    },
+                  }}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

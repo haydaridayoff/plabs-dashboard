@@ -57,6 +57,8 @@ const icons = {
   cancelEdit: { orange: require("./cancel-edit.svg").default },
   loginBg: { gray: require("./login-bg.svg").default },
   delete: { blue: require("./delete-blue.svg").default },
+  back: { gray: require("./back-gray.svg").default },
+  forward: { gray: require("./forward-gray.svg").default },
   search: { gray: require("./search-gray.svg").default },
   info: { blue: require("./info-blue.svg").default },
 };

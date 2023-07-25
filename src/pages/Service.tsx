@@ -18,7 +18,7 @@ const Service: React.FC = () => {
   const serviceColumnDefs: ColumnDef<typeof content>[] = [
     {
       header: "title",
-      size: 100,
+      size: 400,
       accessorKey: "title",
       cell: (info) => (
         <span className="h-16 text-ellipsis overflow-hidden max-w-xs">

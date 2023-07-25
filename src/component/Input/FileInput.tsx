@@ -81,33 +81,33 @@ const FileInput: React.FC<Props> = (props) => {
 
   return (
     <>
-      {props.label && <h3 className="text-sm">{props.label}</h3>}
+      {props.label && <label className="text-sm">{props.label}</label>}
       <div className="flex">
-        <div className="flex-grow-0 flex-shrink-0">
-          {!readOnly && inputFileJsx}
-        </div>
-        <div
-          className={`flex justify-center border border-[#BABABA] h-40 rounded-md mt-2 py-3 w-full px-4 text-[#666666] focus:border-[#4487D9] focus:outline-none ${
-            !props.readOnly ? "max-[1000px]:hidden" : ""
-          } ${props.className}`}
-        >
-          {fileType === fileTypeEnum.image && (
-            <img
-              className="object-contain w-auto h-full"
-              src={preview}
-              alt="Image Here"
-            />
-          )}
-          {fileType === fileTypeEnum.video && (
-            <ReactPlayer
-              url={preview}
-              height={"100%"}
-              width={"auto"}
-              controls
-              playing={true}
-            />
-          )}
-        </div>
+        {!readOnly && <div className="w-full">{inputFileJsx}</div>}
+        {preview && (
+          <div
+            className={`flex justify-center border border-[#BABABA] h-40 rounded-md mt-1 py-3 w-full px-4 text-[#666666] focus:border-[#4487D9] focus:outline-none ${
+              !props.readOnly ? "max-[1000px]:hidden" : ""
+            } ${props.className}`}
+          >
+            {fileType === fileTypeEnum.image && (
+              <img
+                className="object-contain w-auto h-full"
+                src={preview}
+                alt="Image Here"
+              />
+            )}
+            {fileType === fileTypeEnum.video && (
+              <ReactPlayer
+                url={preview}
+                height={"100%"}
+                width={"auto"}
+                controls
+                playing={true}
+              />
+            )}
+          </div>
+        )}
       </div>
     </>
   );

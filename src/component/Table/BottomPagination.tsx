@@ -1,6 +1,7 @@
 import { constants } from "crypto";
 import { on } from "events";
 import { useState } from "react";
+import icons from "../../assets/icons/icons";
 
 type Props = {
   pageSizeOptions: number[];
@@ -79,11 +80,13 @@ const BottomPagination: React.FC<Props> = (props) => {
           {props.minItemIndex + props.rowCount} of {props.totalItem} items
         </div>
         <div className="flex gap-1 items-center">
-          {isPrevPageAvailable(props.currentPage, props.TotalPage) && (
-            <button className="w-6 h-6" onClick={(event) => props.onPrevPage()}>
-              {"<"}
-            </button>
-          )}
+          <button
+            disabled={!isPrevPageAvailable(props.currentPage, props.TotalPage)}
+            className={`w-6 h-6`}
+            onClick={(event) => props.onPrevPage()}
+          >
+            <img src={icons.back.gray} alt="" />
+          </button>
           {getThreePage(props.currentPage, props.TotalPage).map((item) => (
             <button
               key={item}
@@ -97,11 +100,13 @@ const BottomPagination: React.FC<Props> = (props) => {
               {item}
             </button>
           ))}
-          {isNextPageAvailable(props.currentPage, props.TotalPage) && (
-            <button className="w-6 h-6" onClick={(event) => props.onNextPage()}>
-              {">"}
-            </button>
-          )}
+          <button
+            disabled={!isNextPageAvailable(props.currentPage, props.TotalPage)}
+            className="w-6 h-6"
+            onClick={(event) => props.onNextPage()}
+          >
+            <img src={icons.forward.gray} alt="" />
+          </button>
         </div>
       </div>
     </div>

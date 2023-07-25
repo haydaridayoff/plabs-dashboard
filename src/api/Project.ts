@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-type projectType = {
+export type projectType = {
   id: string;
   title: string;
   subTitle: string;
@@ -45,4 +45,27 @@ export const getProject = () => {
       value: project,
     };
   });
+};
+
+export const pushProject = (item: projectType) => {
+  randomProjects.push(item);
+};
+
+export const deleteProject = (id: string) => {
+  const index = randomProjects.findIndex((project) => project.id === id);
+  if (index !== -1) {
+    randomProjects.splice(index, 1);
+  }
+};
+
+export const editProject = (id: string, item: projectType) => {
+  const project = randomProjects.find((project) => project.id === id);
+  if (project) {
+    project.title = item.title;
+    project.subTitle = item.subTitle;
+    project.service = item.service;
+    project.client = item.client;
+    project.file = item.file;
+    project.url = item.url;
+  }
 };

@@ -44,6 +44,7 @@ const router = createBrowserRouter([
           },
           {
             path: ":id",
+            element: <ProjectCreate />,
           },
           {
             path: "create",
@@ -56,8 +57,23 @@ const router = createBrowserRouter([
         element: <Work />,
       },
       {
-        path: "career",
+        path: "career/*",
         element: <Career />,
+        children: [
+          {
+            path: "job/*",
+            children: [
+              {
+                path: "create",
+                element: <ProjectCreate />,
+              },
+              {
+                path: ":id",
+                element: <ProjectCreate />,
+              },
+            ],
+          },
+        ],
       },
       {
         path: "contact",

@@ -18,42 +18,48 @@ const ProjectDashboard: React.FC = () => {
   const projectColumnDefs: ColumnDef<typeof content>[] = [
     {
       header: "Title",
-      size: 500,
+      size: 300,
       accessorKey: "title",
       cell: (info) => (
-        <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
-          {info.getValue() as string}
-        </span>
+        <p className="h-auto truncate">{info.getValue() as string}</p>
       ),
     },
     {
       header: "SubTitle",
-      size: 500,
+      size: 300,
       accessorKey: "subTitle",
       cell: (info) => (
-        <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
+        <p
+          className="min-h-[4.75rem] max-h-[4.75rem]  line-clamp-3 overflow-hidden"
+          // {...{
+          //   style: {
+          //     width: "200px",
+          //     height: "40px",
+          //     lineHeight: "20px",
+          //     display: "-webkit-box",
+          //     WebkitLineClamp: 2,
+          //     lineClamp: 2,
+          //     WebkitBoxOrient: "vertical",
+          //     overflow: "hidden",
+          //   },
+          // }}
+        >
           {info.getValue() as string}
-        </span>
+        </p>
       ),
     },
     {
       header: "Service",
-      size: 500,
+      size: 300,
+
       accessorKey: "service",
-      cell: (info) => (
-        <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
-          {info.getValue() as string}
-        </span>
-      ),
+      cell: (info) => <p className="h-auto">{info.getValue() as string}</p>,
     },
     {
       header: "Action",
-      size: 1,
+      size: 100,
       cell: (info) => (
-        <div className="flex justify-center gap-2">
-          <button>
-            <img src={icons.info.blue} className="h-6 w-6" />
-          </button>
+        <div className="flex justify-center gap-2 h-auto">
           <button>
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
