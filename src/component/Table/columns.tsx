@@ -29,20 +29,28 @@ function getColumnsDef<T extends dataType>(
   firstData: T,
   onEdit: (data: T) => void,
   onDelete: (data: T) => void,
+  option?: {
+    hideFirstColumn?: boolean;
+  },
 ) {
   const col = [] as ColumnDef<T>[];
-  col.push({
-    header: "No",
-    size: 1,
-    cell: (info) => {
-      return (
-        <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
-          {info.row.index + 1}
-        </span>
-      );
-    },
-  });
+  let index = 0;
   for (let key in firstData) {
+    if (index === 0) {
+      index++;
+      col.push({
+        header: toTitleCase(key),
+        accessorKey: key,
+        size: 10,
+        cell: (info) => (
+          <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
+            {info.getValue() as string}
+          </span>
+        ),
+      });
+      continue;
+    }
+    index++;
     if (Object.prototype.hasOwnProperty.call(firstData, key)) {
       col.push({
         header: toTitleCase(key),

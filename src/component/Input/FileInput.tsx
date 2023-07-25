@@ -38,7 +38,7 @@ const FileInput: React.FC<Props> = (props) => {
     fileType = event.target.value as fileTypeEnum;
   }
 
-  let inputFileJsx = (
+  let radioInputJsx = (
     <>
       <div>
         <input
@@ -60,6 +60,12 @@ const FileInput: React.FC<Props> = (props) => {
         />
         <label htmlFor={`${props.id}VideoRadio`}>Video</label>
       </div>
+    </>
+  );
+
+  let inputFileJsx = (
+    <>
+      {props.onChange && radioInputJsx}
       <div
         className={`border border-[#BABABA] rounded-md mt-2 py-3 px-4 text-[#666666] focus:border-[#4487D9] focus:outline-none ${props.className}`}
       >
@@ -76,12 +82,14 @@ const FileInput: React.FC<Props> = (props) => {
   return (
     <>
       {props.label && <h3 className="text-sm">{props.label}</h3>}
-      <div className="flex gap-2">
+      <div className="flex">
         <div className="flex-grow-0 flex-shrink-0">
           {!readOnly && inputFileJsx}
         </div>
         <div
-          className={`flex justify-center border border-[#BABABA] h-40 rounded-md mt-2 py-3 w-full px-4 text-[#666666] focus:border-[#4487D9] focus:outline-none ${props.className}`}
+          className={`flex justify-center border border-[#BABABA] h-40 rounded-md mt-2 py-3 w-full px-4 text-[#666666] focus:border-[#4487D9] focus:outline-none ${
+            !props.readOnly ? "max-[1000px]:hidden" : ""
+          } ${props.className}`}
         >
           {fileType === fileTypeEnum.image && (
             <img

@@ -60,20 +60,25 @@ const Section: React.FC<Props> = (props) => {
           </span>
         </button>
       </div>
-      <form
-        className="flex flex-col"
-        onSubmit={props.onSubmit ? props.onSubmit : () => {}}
-      >
-        {props.children}
-        {props.isEditing && (
-          <button
-            type="submit"
-            className="w-24 rounded-md bg-[#0AB663] text-center text-sm font-semibold font text-[#FAFAFA] shadow-sm px-4 py-2 mt-4 self-start"
-          >
-            Save
-          </button>
-        )}
-      </form>
+      {SectionType.Edit === type && (
+        <form
+          className="flex flex-col"
+          onSubmit={props.onSubmit ? props.onSubmit : () => {}}
+        >
+          {props.children}
+          {props.isEditing && (
+            <button
+              type="submit"
+              className="w-24 rounded-md bg-[#0AB663] text-center text-sm font-semibold font text-[#FAFAFA] shadow-sm px-4 py-2 mt-4 self-start"
+            >
+              Save
+            </button>
+          )}
+        </form>
+      )}
+      {SectionType.Add === props.type && (
+        <div className="flex flex-col">{props.children}</div>
+      )}
     </section>
   );
 };

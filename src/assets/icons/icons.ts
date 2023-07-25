@@ -58,6 +58,7 @@ const icons = {
   loginBg: { gray: require("./login-bg.svg").default },
   delete: { blue: require("./delete-blue.svg").default },
   search: { gray: require("./search-gray.svg").default },
+  info: { blue: require("./info-blue.svg").default },
 };
 
 export default icons;

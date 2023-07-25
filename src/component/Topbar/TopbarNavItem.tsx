@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { Fragment, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import icons from "../../assets/icons/icons";
 import { navItem } from "../../model/Sidebar/SidebarNavItems";
@@ -14,13 +14,22 @@ const TopbarNavItem: React.FC<Props> = (props) => {
   return (
     <>
       {sidebar.navActiveItems.current.map((item) => {
+        let isLastItem =
+          sidebar.navActiveItems.current.indexOf(item) ===
+          sidebar.navActiveItems.current.length - 1;
         return (
-          <>
-            <img src={icons.navSeparator.gray} alt=" " />
-            <NavLink key={item.id} to={props.navItem.path + item.path}>
+          <Fragment key={`${item.id}-fragment`}>
+            <NavLink key={item.id} to={item.path}>
               {item.title}
             </NavLink>
-          </>
+            {!isLastItem && (
+              <img
+                src={icons.navSeparator.gray}
+                alt=""
+                key={`${item.id}-image`}
+              />
+            )}
+          </Fragment>
         );
       })}
     </>

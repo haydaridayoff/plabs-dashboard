@@ -1,24 +1,24 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { isTemplateLiteralTypeSpan } from "typescript";
+import { getProject } from "../api/Project";
 import { getService } from "../api/Service";
 import icons from "../assets/icons/icons";
-import Card from "../component/Card/Card";
-import Content from "../component/Content/Content";
 import Section from "../component/Section/Section";
-import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import TableBase from "../component/Table/TableBase";
-import Topbar from "../component/Topbar/Topbar";
 
-const Service: React.FC = () => {
+const ProjectDashboard: React.FC = () => {
   const [content, setContent] = useState(
-    getService().map((item) => item.value),
+    getProject().map((item) => item.value),
   );
 
-  const serviceColumnDefs: ColumnDef<typeof content>[] = [
+  const navigator = useNavigate();
+
+  const projectColumnDefs: ColumnDef<typeof content>[] = [
     {
-      header: "title",
-      size: 100,
+      header: "Title",
+      size: 500,
       accessorKey: "title",
       cell: (info) => (
         <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
@@ -27,9 +27,19 @@ const Service: React.FC = () => {
       ),
     },
     {
-      header: "description",
+      header: "SubTitle",
       size: 500,
-      accessorKey: "description",
+      accessorKey: "subTitle",
+      cell: (info) => (
+        <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
+          {info.getValue() as string}
+        </span>
+      ),
+    },
+    {
+      header: "Service",
+      size: 500,
+      accessorKey: "service",
       cell: (info) => (
         <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
           {info.getValue() as string}
@@ -57,15 +67,18 @@ const Service: React.FC = () => {
 
   return (
     <>
-      <Content>
-        <Card>
-          <Section title="Service" type="add">
-            <TableBase data={content} columns={serviceColumnDefs}></TableBase>
-          </Section>
-        </Card>
-      </Content>
+      <Section
+        title="Service"
+        type="add"
+        onClick={() => {
+          //navigate back to root
+          navigator("/project/create", { state: { fromDashboard: true } });
+        }}
+      >
+        <TableBase data={content} columns={projectColumnDefs}></TableBase>
+      </Section>
     </>
   );
 };
 
-export default Service;
+export default ProjectDashboard;

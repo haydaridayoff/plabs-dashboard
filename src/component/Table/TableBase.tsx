@@ -18,14 +18,21 @@ import TopPagination from "./TopPagination";
 interface Props {
   data: any[];
   columns?: ColumnDef<any>[];
-  onEdit: (data: any) => void;
-  onDelete: (data: any) => void;
+  onEdit?: (data: any) => void;
+  onDelete?: (data: any) => void;
 }
 
 const TableBase: FC<Props> = (props) => {
   const columnProps = props.columns
     ? props.columns
-    : getColumnsDef<any>(props.data[0], props.onEdit, props.onDelete);
+    : getColumnsDef<any>(
+        props.data[0],
+        props.onEdit ? props.onEdit : () => {},
+        props.onDelete ? props.onDelete : () => {},
+        {
+          hideFirstColumn: true,
+        },
+      );
 
   const [sortingState, setSortingState] = React.useState<SortingState>([]);
   const [paginationState, setPaginationState] = React.useState<PaginationState>(

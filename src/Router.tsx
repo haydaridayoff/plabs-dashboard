@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Journal from "./pages/Journal";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
+import ProjectCreate from "./pages/ProjectCreate";
+import ProjectDashboard from "./pages/ProjectDashboard";
 import Root from "./pages/Root";
 import Service from "./pages/Service";
 import Work from "./pages/Work";
@@ -33,11 +35,19 @@ const router = createBrowserRouter([
         element: <Service />,
       },
       {
-        path: "project",
+        path: "project/*",
         element: <Project />,
         children: [
           {
-            path: "?tabStatus=:tabStatus",
+            path: "dashboard",
+            element: <ProjectDashboard />,
+          },
+          {
+            path: ":id",
+          },
+          {
+            path: "create",
+            element: <ProjectCreate />,
           },
         ],
       },
@@ -48,11 +58,6 @@ const router = createBrowserRouter([
       {
         path: "career",
         element: <Career />,
-        children: [
-          {
-            path: "?tabStatus=:tabStatus",
-          },
-        ],
       },
       {
         path: "contact",
@@ -61,11 +66,6 @@ const router = createBrowserRouter([
       {
         path: "ecosystem",
         element: <Ecosystem />,
-        children: [
-          {
-            path: "?tabStatus=:tabStatus",
-          },
-        ],
       },
       {
         path: "journal",

@@ -1,5 +1,8 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import DialogFormContext, {
+  DialogFormContextProvider,
+} from "../component/Dialog/DialogFormContext";
 import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import Topbar from "../component/Topbar/Topbar";
 
@@ -11,10 +14,12 @@ const Journal = () => {
   return (
     <>
       <div className="bg-[#F4F9FF] fixed h-screen w-screen bg-fixed bg-center bg-no-repeat bg-cover"></div>
-      <SidebarContextProvider>
-        <Outlet />
-        <Topbar />
-      </SidebarContextProvider>
+      <DialogFormContextProvider>
+        <SidebarContextProvider>
+          <Outlet />
+          <Topbar />
+        </SidebarContextProvider>
+      </DialogFormContextProvider>
     </>
   );
 };

@@ -35,10 +35,21 @@ const sidebarNavItems: navItem[] = [
       {
         id: "project-dashboard",
         title: "Dashboard",
-        path: "",
-        param: {
-          tabStatus: "dashboard",
-        },
+        path: "project",
+        icon: icons.project,
+        isActive: false,
+      },
+      {
+        id: "project-create",
+        title: "Create",
+        path: "create",
+        icon: icons.project,
+        isActive: false,
+      },
+      {
+        id: "project-edit",
+        title: "Edit",
+        path: ":id",
         icon: icons.project,
         isActive: false,
       },

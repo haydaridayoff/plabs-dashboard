@@ -15,9 +15,8 @@ const About = () => {
 
   useEffect(() => {
     if (!tab) {
-      navigator("/about?tabStatus=about");
       sidebar.setActiveItems(
-        undefined,
+        0,
         undefined,
         undefined,
         undefined,
@@ -25,14 +24,38 @@ const About = () => {
         sidebar.navActiveItems.current[0].id,
         sidebar.navActiveItems.current[0].subNav![0].id,
       );
+      navigator("/about?tabStatus=about");
     }
   }, [tab]);
 
   console.log(tab);
+  console.log(sidebar.navActiveItems.current);
   return (
     <>
       <Content>
-        <Card></Card>
+        <Card>
+          {sidebar.navActiveItems.current[0] &&
+            sidebar.navActiveItems.current[0].subNav &&
+            sidebar.navActiveItems.current[0].subNav.map((item) => (
+              <Link
+                key={item.id}
+                onClick={() => {
+                  sidebar.setActiveItems(
+                    0,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    sidebar.navActiveItems.current[0].id,
+                    item.id,
+                  );
+                }}
+                to={`/about?tabStatus=${item.param!["tabStatus"]}`}
+              >
+                {item.title}
+              </Link>
+            ))}
+        </Card>
       </Content>
     </>
   );
