@@ -51,6 +51,11 @@ export const pushProject = (item: projectType) => {
   randomProjects.push(item);
 };
 
+export const createProject = (item: projectType) => {
+  item.id = faker.string.uuid();
+  randomProjects.push(item);
+};
+
 export const deleteProject = (id: string) => {
   const index = randomProjects.findIndex((project) => project.id === id);
   if (index !== -1) {

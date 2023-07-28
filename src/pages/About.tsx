@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  redirect,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import Card from "../component/Card/Card";
 import CardTabs from "../component/Card/CardTabs";
 import Content from "../component/Content/Content";
@@ -8,49 +15,60 @@ import AboutEcosystem from "./AboutEcosystem";
 import AboutMain from "./AboutMain";
 
 const About = () => {
-  // OLD CODE
-  // let { search } = useLocation();
-  // let query = new URLSearchParams(search);
   const sidebar = useContext(SidebarContext);
-  const [query, setQuery] = useSearchParams();
-  const navigator = useNavigate();
-  let tab = query.get("tabStatus");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const tab = params.get("tabStatus");
 
   const [tabLinks, setTabLinks] = useState([
     {
       name: "About",
       path: "/about?tabStatus=about",
-      isActive: false,
+      isActive: tab === "about" ? true : false,
     },
     {
       name: "Ecosystem",
       path: "/about?tabStatus=ecosystem",
-      isActive: false,
+      isActive: tab === "ecosystem" ? true : false,
     },
     {
       name: "Partner",
       path: "/about?tabStatus=partner",
-      isActive: false,
+      isActive: tab === "partner" ? true : false,
     },
     {
       name: "People",
       path: "/about?tabStatus=people",
-      isActive: false,
+      isActive: tab === "people" ? true : false,
     },
   ]);
   useEffect(() => {
-    if (!tab) {
-      sidebar.setActiveItems(
-        0,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        sidebar.navActiveItems.current[0].id,
-        sidebar.navActiveItems.current[0].subNav![0].id,
-      );
-      navigator("/about?tabStatus=about");
-    }
+    setTabLinks([
+      {
+        name: "About",
+        path: "/about?tabStatus=about",
+        isActive: tab === "about" ? true : false,
+      },
+      {
+        name: "Ecosystem",
+        path: "/about?tabStatus=ecosystem",
+        isActive: tab === "ecosystem" ? true : false,
+      },
+      {
+        name: "Partner",
+        path: "/about?tabStatus=partner",
+        isActive: tab === "partner" ? true : false,
+      },
+      {
+        name: "People",
+        path: "/about?tabStatus=people",
+        isActive: tab === "people" ? true : false,
+      },
+    ]);
+    !tab && navigate("/about?tabStatus=about");
+    console.log("tab", tab);
+    console.log("tabLinks", tabLinks);
   }, [tab]);
 
   console.log(tabLinks);

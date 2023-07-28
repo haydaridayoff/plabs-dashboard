@@ -1,3 +1,4 @@
+import { get } from "http";
 import React, {
   Reducer,
   useEffect,
@@ -6,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useLocation } from "react-router-dom";
 import {
   getNavItem,
   getNavItems,
@@ -68,6 +70,8 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
   const [navItemsStatus, setNavItemsStatus] =
     useState<navItem[]>(sidebarNavItems);
 
+  const loc = useLocation();
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(
     reducer,
     initialState,
@@ -95,7 +99,7 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
   useEffect(() => {
     const ids = getActiveId();
     setActiveItems(0, undefined, undefined, undefined, undefined, ...ids);
-  }, []);
+  }, [url.pathname, url.searchParams.get("tabStatus"), loc.pathname]);
 
   const setActiveItems = (
     index: number = 0,
@@ -105,6 +109,7 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
     activeItems?: navItem[],
     ...ids: string[]
   ) => {
+    let first = true;
     if (!navItem || !navItems || !activeItems || !subNavItems) {
       activeItems = getNestedItems((index = 0), undefined, ...ids);
       if (activeItems.length !== ids.length) {
@@ -119,6 +124,7 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
     if (navItem) navItem.isActive = true;
     subNavItems = navItem?.subNav;
     if (navItem?.subNav && index + 1 < activeItems.length) {
+      first = false;
       setActiveItems(
         index + 1,
         navItem,
@@ -128,7 +134,9 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
         ...ids,
       );
     }
+    console.log(index);
     if (index === 0) {
+      console.log("setNavItemsStatus");
       setNavItemsStatus([...navItems]);
       navActiveItems.current = [...activeItems];
     }

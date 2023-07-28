@@ -1,7 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
-import { getProject, projectType } from "../api/Project";
+import {
+  createProject,
+  editProject,
+  getProject,
+  projectType,
+  pushProject,
+} from "../api/Project";
 import { getService } from "../api/Service";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
@@ -11,10 +17,12 @@ import SelectInput from "../component/Input/SelectInput";
 import TextArea from "../component/Input/TextArea";
 import Section from "../component/Section/Section";
 import SidebarContext from "../component/Sidebar/sidebar-context";
+import { editHomeProject } from "../model/MockData/homeData";
 
 const ProjectCreate: React.FC = () => {
   //get params from url
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [content, setContent] = useState<projectType>({
     id: "",
@@ -38,6 +46,18 @@ const ProjectCreate: React.FC = () => {
     }
   }, [id]);
 
+  const submitHandler = () => {
+    if (id !== "" && id !== undefined) {
+      //edit
+      editProject(id, content);
+      editHomeProject(id, { title: content.title, image: content.file.src });
+    } else {
+      //add
+      createProject(content);
+    }
+    navigate(-1);
+    console.log(content);
+  };
   return (
     <>
       <Section title="Project" isLast={true} type="add">
@@ -71,6 +91,7 @@ const ProjectCreate: React.FC = () => {
               <SelectInput
                 label="Service"
                 selectStyle="w-full"
+                defaultValue={content.service}
                 options={getService()}
                 onChange={(option) => {
                   setContent({
@@ -102,6 +123,7 @@ const ProjectCreate: React.FC = () => {
               <SelectInput
                 label="Client"
                 selectStyle="w-full"
+                defaultValue={content.client}
                 options={getService()}
                 onChange={(option) => {
                   setContent({
@@ -122,6 +144,13 @@ const ProjectCreate: React.FC = () => {
             </div>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={submitHandler}
+          className="w-40 mx-auto rounded-md bg-[#0AB663] text-center text-sm font-semibold font text-[#FAFAFA] shadow-sm px-4 py-2 mt-4 self-start"
+        >
+          Save
+        </button>
       </Section>
     </>
   );

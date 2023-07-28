@@ -62,7 +62,7 @@ const isNextPageAvailable = (currentPage: number, totalPage: number) => {
 
 const BottomPagination: React.FC<Props> = (props) => {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between mt-4">
       <select
         value={props.currentPageSize}
         onChange={props.onPageSizeChange}

@@ -14,44 +14,32 @@ type Props = {
 
 const CardTabs: React.FC<Props> = (props) => {
   const sidebar = useContext(SidebarContext);
+  console.log("CardTabs", props.items);
   return (
     <div
       className={`flex border-b-2 border-[#D9D9D9] gap-6 ${props.className}`}
     >
-      <div className="flex w-1/3">
+      <nav className="flex w-1/3">
         {props.items?.map((item, index) => {
           return (
             <div
               key={index}
               className="flex-1 text-center py-4 border-b-2 border-transparent"
             >
-              <Link
+              <NavLink
                 to={item.path}
-                onClick={(e) =>
-                  sidebar.setActiveItems(
-                    0,
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
-                    sidebar.navActiveItems.current[0].id,
-                    sidebar.navActiveItems.current[0].subNav![index].id,
-                  )
-                }
                 className={`font-jakarta text-base ${
-                  sidebar.navActiveItems.current[0]
-                    ? sidebar.navActiveItems.current[0].subNav![index].isActive
-                      ? "font-bold"
-                      : ""
-                    : ""
+                  item.isActive === true
+                    ? "font-bold text-[#4487D9]"
+                    : "text-[#989898]"
                 }`}
               >
                 {item.name}
-              </Link>
+              </NavLink>
             </div>
           );
         })}
-      </div>
+      </nav>
     </div>
   );
 };

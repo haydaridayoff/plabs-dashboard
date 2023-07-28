@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { getProject } from "../../api/Project";
 import images from "../../assets/images/images";
 
 export type homeType = {
@@ -44,19 +45,37 @@ export type homeType = {
 };
 
 const makeDummyProject = () => {
-  const obj = [];
-  for (let i = 0; i < 100; i++) {
-    obj.push({
-      id: i.toString(),
-      title: faker.hacker.phrase(),
-      image: faker.image.dataUri({
-        width: 640,
-        height: 640,
-        color: faker.color.human(),
-      }),
-    });
-  }
-  return obj;
+  //get random 50 project
+  console.log("getRandomProject");
+  const projects = getProject().map((project) => project.value);
+  const randomProjects = faker.helpers.shuffle(projects).slice(0, 50);
+  return [
+    ...randomProjects.map((project) => {
+      return {
+        id: project.id,
+        title: project.title,
+        image: project.file.src,
+      };
+    }),
+  ];
+};
+
+const dummyProject = makeDummyProject();
+
+export const deleteHomeProject = (id: string) => {
+  homeData.projects = homeData.projects.filter((project) => project.id !== id);
+};
+
+export const editHomeProject = (
+  id: string,
+  item: {
+    title: string;
+    image: string;
+  },
+) => {
+  const index = homeData.projects.findIndex((project) => project.id === id);
+  homeData.projects[index].title = item.title;
+  homeData.projects[index].image = item.image;
 };
 
 const homeData: homeType = {
@@ -100,8 +119,10 @@ const homeData: homeType = {
     },
   },
   latestWork: "Recent Works",
-  projects: makeDummyProject(),
+  projects: dummyProject,
   clients: makeDummyProject(),
 };
+
+console.log("homeData", homeData);
 
 export default homeData;

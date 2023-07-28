@@ -1,15 +1,8 @@
-import { info } from "console";
-import { faker } from "@faker-js/faker";
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  TableOptions,
-  useReactTable,
-} from "@tanstack/react-table";
-import { getValue } from "@testing-library/user-event/dist/utils";
+import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getProject } from "../api/Project";
+import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
 import DialogForm from "../component/Dialog/DialogFormContext";
@@ -19,17 +12,19 @@ import FileInput from "../component/Input/FileInput";
 import InputField from "../component/Input/InputField";
 import TextArea from "../component/Input/TextArea";
 import Section from "../component/Section/Section";
-import BottomPagination from "../component/Table/BottomPagination";
-import GlobalFiltering from "../component/Table/GlobalFiltering";
+import SidebarContext from "../component/Sidebar/sidebar-context";
 import TableBase from "../component/Table/TableBase";
-import homeData from "../model/MockData/homeData";
+import homeData, { deleteHomeProject } from "../model/MockData/homeData";
 
 const Home = () => {
+  const homeDataRef = React.useRef(homeData);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [content, setContent] = useState(homeData);
+  const [content, setContent] = useState(homeDataRef.current);
   const [editContent, setEditContent] = useState(content);
   //useState to refresh component when content is changed
   const [refresh, setRefresh] = useState(false);
+
+  const navigate = useNavigate();
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -382,140 +377,115 @@ const Home = () => {
 
   //#region Table
   const dialog = useContext(DialogFormContext);
+  const sidebar = useContext(SidebarContext);
+
+  const projectColumns: ColumnDef<{
+    id: string;
+    title: string;
+    image: string;
+  }>[] = [
+    {
+      header: "Title",
+      accessorKey: "title",
+      cell: (info) => <p className="h-auto">{info.getValue() as string}</p>,
+    },
+    {
+      header: "Image",
+      accessorKey: "image",
+      cell: (info) => (
+        <div className="h-16 w-16 mx-auto">
+          <img
+            className="h-full w-full object-contain"
+            src={info.getValue() as string}
+            alt="project image"
+          />
+        </div>
+      ),
+    },
+    {
+      header: "Action",
+      size: 1,
+      cell: (info) => (
+        <div className="flex gap-2 justify-center">
+          <button
+            onClick={() => {
+              //navigate root to project page
+              sidebar.setActiveItems(
+                0,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                sidebar.navItemsStatus[2].id,
+                sidebar.navItemsStatus[2].subNav![2].id,
+              );
+              navigate(`/project/${info.row.original.id}`, {
+                state: { fromDashboard: true },
+              });
+            }}
+          >
+            <img src={icons.edit.blue} className="h-6 w-6" />
+          </button>
+          <button
+            onClick={(e) => {
+              let id = info.row.original.id;
+              let newerContent = {
+                ...homeDataRef.current,
+                projects: content.projects.filter(
+                  (project) => project.id !== id,
+                ),
+              };
+              setContent((prev) => {
+                let newContent = { ...prev };
+                newContent.projects = newContent.projects.filter(
+                  (project) => project.id !== id,
+                );
+                console.log(newContent);
+                return newContent;
+              });
+              deleteHomeProject(id);
+            }}
+          >
+            <img src={icons.delete.blue} className="h-6 w-6" />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   const addProjectHandler = () => {
-    const project = getProject()[0];
+    let project = getProject()[0].value;
 
-    const ProjectAddHandler = () => {
-      //add selected project to content
+    const confirmHandler = () => {
       setContent({
         ...content,
         projects: [
           ...content.projects,
           {
-            id: project.value.id,
-            title: project.value.title,
-            image: project.value.file.src,
+            id: project.id,
+            title: project.title,
+            image: project.file.src,
           },
         ],
       });
-      //close dialog
-      dialog.toggleDialog();
-    };
-
-    const ProjectCancelHandler = () => {
-      //close dialog
-      dialog.toggleDialog();
     };
 
     const inputElement = (
       <DialogSelect
         label="Project"
         options={getProject()}
-        value={project}
         onChange={(option) => {
-          project.label = option?.label!;
-          project.value = option?.value!;
+          project = option.value;
         }}
-      ></DialogSelect>
+      />
     );
 
-    dialog.createDialog(
-      "Add Project",
-      project,
-      inputElement,
-      ProjectAddHandler,
-      ProjectCancelHandler,
-    );
-  };
-
-  useEffect(() => {
-    if (dialog.data && dialog.isOpen) editProjectHandler(dialog.data as any);
-  }, [dialog.data]);
-
-  const editProjectHandler = (data: {
-    id: string;
-    title: string;
-    image: string;
-  }) => {
-    console.log(dialog.data as typeof data);
-    const submitEditHandler = () => {
-      //edit selected project to content
-      setContent({
-        ...content,
-        projects: [
-          ...content.projects.filter(
-            (project) => project.id !== (dialog.data as typeof data).id,
-          ),
-          dialog.data as typeof data,
-        ],
-      });
-
-      //close dialog
-      dialog.toggleDialog();
-    };
-
-    const cancelEditHandler = () => {
-      //close dialog
-      dialog.toggleDialog();
-    };
-
-    const inputElement = (
-      <div className="flex flex-col gap-2 mb-4">
-        <div>
-          <InputField
-            readOnly={true}
-            label="Id"
-            value={(dialog.data as typeof data).id}
-          />
-        </div>
-        <div>
-          <InputField
-            label="Title"
-            value={(dialog.data as typeof data).title}
-            onChange={(e) => {
-              dialog.setData({
-                ...(dialog.data as typeof data),
-                title: e.target.value,
-              });
-            }}
-          />
-        </div>
-        <div>
-          <FileInput
-            label="Image"
-            readOnly={false}
-            preview={(dialog.data as typeof data).image}
-            fileType={"image"}
-            onFileChange={(e) => {
-              dialog.setData({
-                ...(dialog.data as typeof data),
-                image: URL.createObjectURL(e.target.files![0]),
-              });
-            }}
-          />
-        </div>
-      </div>
-    );
-
-    dialog.createDialog(
-      "Edit Project",
-      data,
-      inputElement,
-      submitEditHandler,
-      cancelEditHandler,
-    );
+    dialog.createDialog("Add Project", inputElement, confirmHandler, () => {});
   };
 
   const projectTable = (
     <Section title={"Select Project"} onClick={addProjectHandler} type="add">
-      <TableBase
-        data={content.projects}
-        onEdit={editProjectHandler}
-        onDelete={(data) => {
-          //deleteHandler(data);
-        }}
-      />
+      <TableBase data={content.projects} columns={projectColumns} />
     </Section>
   );
 

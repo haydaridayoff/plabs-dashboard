@@ -35,14 +35,14 @@ const sidebarNavItems: navItem[] = [
       {
         id: "project-dashboard",
         title: "Dashboard",
-        path: "project",
+        path: "/project",
         icon: icons.project,
         isActive: false,
       },
       {
         id: "project-create",
         title: "Create",
-        path: "create",
+        path: "/project/create",
         icon: icons.project,
         isActive: false,
       },
@@ -65,7 +65,7 @@ const sidebarNavItems: navItem[] = [
       {
         id: "about-about",
         title: "About",
-        path: "",
+        path: "/about?tabStatus=about",
         param: {
           tabStatus: "about",
         },
@@ -75,7 +75,7 @@ const sidebarNavItems: navItem[] = [
       {
         id: "about-ecosystem",
         title: "Ecosystem",
-        path: "",
+        path: "about?tabStatus=ecosystem",
         param: {
           tabStatus: "ecosystem",
         },
@@ -85,7 +85,7 @@ const sidebarNavItems: navItem[] = [
       {
         id: "about-partner",
         title: "Partner",
-        path: "",
+        path: "/about?tabStatus=partner",
         param: {
           tabStatus: "partner",
         },
@@ -95,7 +95,7 @@ const sidebarNavItems: navItem[] = [
       {
         id: "about-people",
         title: "People",
-        path: "",
+        path: "/about?tabStatus=people",
         param: {
           tabStatus: "people",
         },
@@ -121,7 +121,7 @@ const sidebarNavItems: navItem[] = [
       {
         id: "career-career",
         title: "Career",
-        path: "",
+        path: "/career?tabstatus=career",
         param: {
           tabStatus: "career",
         },
@@ -131,7 +131,7 @@ const sidebarNavItems: navItem[] = [
       {
         id: "career-job",
         title: "Job",
-        path: "",
+        path: "/career?tabstatus=job",
         param: {
           tabStatus: "job",
         },
@@ -141,7 +141,7 @@ const sidebarNavItems: navItem[] = [
       {
         id: "career-applicant",
         title: "Applicant",
-        path: "",
+        path: "/career?tabstatus=applicant",
         param: {
           tabStatus: "applicant",
         },

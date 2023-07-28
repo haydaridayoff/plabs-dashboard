@@ -74,7 +74,7 @@ const ProjectDashboard: React.FC = () => {
   return (
     <>
       <Section
-        title="Service"
+        title="Project"
         type="add"
         onClick={() => {
           //navigate back to root

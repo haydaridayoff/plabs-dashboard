@@ -7,7 +7,7 @@ type Props = {
     label: string;
     value: any;
   }[];
-  value: any;
+  value?: any;
   onChange: (option: { label: string; value: any }) => void;
 };
 

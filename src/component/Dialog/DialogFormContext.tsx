@@ -10,9 +10,7 @@ export const DialogFormContextProvider: React.FC<Props> = (props) => {
   const [inputElement, setInputElement] = useState<React.JSX.Element>(() => (
     <></>
   ));
-  const [data, setData] = useState<any>({}); // [key: string]: any
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [refresh, setRefresh] = useState(false);
 
   const onConfirmForm = useRef<
     (event: React.FormEvent<HTMLFormElement>) => void
@@ -23,7 +21,6 @@ export const DialogFormContextProvider: React.FC<Props> = (props) => {
   const closeDialog = () => {
     setTitle("");
     setInputElement(<></>);
-    setData({});
     onCancelForm.current = () => {};
     onConfirmForm.current = () => {};
     setIsOpen(false);
@@ -35,17 +32,15 @@ export const DialogFormContextProvider: React.FC<Props> = (props) => {
 
   const createDialog = (
     title: string,
-    data: any | any[],
     inputElement: React.JSX.Element,
     onConfirm: () => void,
     onCancel: () => void,
   ) => {
     setTitle(title);
-    setData(data);
     setInputElement(inputElement);
     onConfirmForm.current = onConfirm;
     onCancelForm.current = onCancel;
-    setIsOpen(true);
+    openDialog();
   };
 
   const SubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
@@ -60,13 +55,7 @@ export const DialogFormContextProvider: React.FC<Props> = (props) => {
         createDialog: createDialog,
         toggleDialog: isOpen ? closeDialog : openDialog,
         isOpen: isOpen,
-        data: data,
-        setData: (data: any | any[]) => setData(data),
-        setInputElement: (inputElement: React.JSX.Element) =>
-          setInputElement(inputElement),
-        refresh: () => {
-          setRefresh(!refresh);
-        },
+        setInputElement: setInputElement,
       }}
     >
       {props.children}
@@ -121,7 +110,6 @@ export const DialogFormContextProvider: React.FC<Props> = (props) => {
 const DialogFormContext = createContext({
   createDialog: (
     title: string,
-    data: any | any[],
     inputElement: React.JSX.Element,
     onConfirm: () => void,
     onCancel: () => void,
@@ -129,9 +117,6 @@ const DialogFormContext = createContext({
   toggleDialog: () => {},
   setInputElement: (inputElement: React.JSX.Element) => {},
   isOpen: false,
-  data: {}, //data default type is any
-  setData: (data: any) => {},
-  refresh: () => {},
 });
 
 export default DialogFormContext;
