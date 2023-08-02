@@ -1,4 +1,7 @@
 import { faker } from "@faker-js/faker";
+import { getEcosystem } from "../../api/Ecosystem";
+import { getPartner } from "../../api/Partner";
+import { getPeople } from "../../api/People";
 import images from "../../assets/images/images";
 
 export type aboutTabType = {
@@ -37,51 +40,50 @@ export type peopleTabType = {
 };
 
 const makeDummyEcosystem = () => {
+  //get 50 random ecosystem
+  const ecosystem = getEcosystem();
   const obj: ecosystemTabType[] = [];
-  for (let i = 0; i < 100; i++) {
-    obj.push({
-      id: faker.string.uuid(),
-      name: faker.location.country(),
-      image: faker.image.dataUri({
-        width: 640,
-        height: 640,
-        color: faker.color.human(),
-      }),
+  faker.helpers
+    .shuffle(ecosystem)
+    .slice(0, 50)
+    .forEach((item) => {
+      obj.push({
+        id: item.value.id,
+        name: item.value.name,
+        image: item.value.file.src,
+      });
     });
-  }
   return obj;
 };
 
 const makeDummyPartner = () => {
   const obj: partnerTabType[] = [];
-  for (let i = 0; i < 100; i++) {
-    obj.push({
-      id: faker.string.uuid(),
-      name: faker.company.name(),
-      image: faker.image.dataUri({
-        width: 640,
-        height: 640,
-        color: faker.color.human(),
-      }),
+  faker.helpers
+    .shuffle(getPartner())
+    .slice(0, 50)
+    .forEach((item) => {
+      obj.push({
+        id: item.value.id,
+        name: item.value.name,
+        image: item.value.logo.src,
+      });
     });
-  }
   return obj;
 };
 
 const makeDummyPeople = () => {
   const obj: peopleTabType[] = [];
-  for (let i = 0; i < 100; i++) {
-    obj.push({
-      id: faker.string.uuid(),
-      name: faker.person.fullName(),
-      occupation: faker.person.jobTitle(),
-      image: faker.image.dataUri({
-        width: 640,
-        height: 640,
-        color: faker.color.human(),
-      }),
+  faker.helpers
+    .shuffle(getPeople())
+    .slice(0, 50)
+    .forEach((item) => {
+      obj.push({
+        id: item.value.id,
+        name: item.value.name,
+        occupation: item.value.occupation,
+        image: item.value.photo.src,
+      });
     });
-  }
   return obj;
 };
 

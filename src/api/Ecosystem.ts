@@ -28,8 +28,8 @@ const createRandomEcosystem = (count: number) => {
       file: {
         type: "image",
         src: faker.image.dataUri({
-          width: 640,
-          height: 640,
+          width: 100,
+          height: 100,
           color: faker.color.human(),
         }),
       },

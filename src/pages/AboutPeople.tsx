@@ -1,41 +1,37 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getEcosystem } from "../api/Ecosystem";
 import icons from "../assets/icons/icons";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
-import { ecosystemTabData } from "../model/MockData/AboutData";
+import { peopleTabData } from "../model/MockData/AboutData";
 
-const AboutEcosystem: React.FC = () => {
-  const [content, setContent] = useState(ecosystemTabData);
+const AboutPeople: React.FC = () => {
+  const [content, setContent] = useState(peopleTabData);
 
   const navigator = useNavigate();
 
-  const ecosystemColumnDefs: ColumnDef<typeof content>[] = [
+  const columnDefPeople: ColumnDef<typeof content>[] = [
     {
       header: "Name",
-      size: 300,
       accessorKey: "name",
       cell: (info) => <p className="h-auto">{info.getValue() as string}</p>,
     },
     {
+      header: "Occupation",
+      accessorKey: "occupation",
+      cell: (info) => <p className="h-auto">{info.getValue() as string}</p>,
+    },
+    {
       header: "Image",
-      size: 300,
       accessorKey: "image",
       cell: (info) => (
-        <img
-          src={info.getValue() as string}
-          onClick={() => {
-            console.log(info.getValue() as string);
-          }}
-          className="h-16 w-16 mx-auto"
-        />
+        <img src={info.getValue() as string} className="h-16 w-16 mx-auto" />
       ),
     },
     {
       header: "Action",
-      size: 100,
+      size: 80,
       cell: (info) => (
         <div className="flex justify-center gap-2 h-24">
           <button>
@@ -51,11 +47,11 @@ const AboutEcosystem: React.FC = () => {
 
   return (
     <>
-      <Section title="Service" type="add">
-        <TableBase data={content} columns={ecosystemColumnDefs}></TableBase>
+      <Section title="Partner" type="add">
+        <TableBase data={content} columns={columnDefPeople}></TableBase>
       </Section>
     </>
   );
 };
 
-export default AboutEcosystem;
+export default AboutPeople;

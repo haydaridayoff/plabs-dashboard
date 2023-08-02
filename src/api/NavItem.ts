@@ -21,6 +21,13 @@ export const getNavItem = (
 ) => {
   let navItem: navItem | undefined;
   navItem = navItems.find((item) => item.id === id);
+  if (!navItem) {
+    let ids = id.split("-");
+    ids[ids.length - 1] = "id";
+    let newId = ids.join("-");
+    console.log(newId);
+    navItem = navItems.find((item) => item.id === newId);
+  }
   return navItem;
 };
 

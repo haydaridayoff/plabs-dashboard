@@ -1,11 +1,13 @@
 import { faker } from "@faker-js/faker";
+import { clientsType, getClients } from "./Clients";
+import { getService, getServices, serviceType } from "./Service";
 
 export type projectType = {
   id: string;
   title: string;
-  subTitle: string;
-  service: string;
-  client: string;
+  subtitle: string;
+  service: serviceType;
+  client: clientsType;
   file: {
     type: string;
     src: string;
@@ -18,10 +20,10 @@ const createRandomProject = (count: number) => {
   for (let i = 0; i < count; i++) {
     obj.push({
       id: faker.string.uuid(),
-      title: faker.hacker.noun(),
-      subTitle: faker.hacker.phrase(),
-      service: faker.hacker.verb(),
-      client: faker.hacker.abbreviation(),
+      title: faker.lorem.words(),
+      subtitle: faker.lorem.paragraphs(),
+      service: faker.helpers.arrayElement(getServices()).value,
+      client: faker.helpers.arrayElement(getClients()).value,
       file: {
         type: "image",
         src: faker.image.dataUri({
@@ -38,13 +40,25 @@ const createRandomProject = (count: number) => {
 
 const randomProjects = createRandomProject(100);
 
-export const getProject = () => {
+export const getProjects = () => {
   return randomProjects.map((project) => {
     return {
       label: project.title,
       value: project,
     };
   });
+};
+
+export const getProject = (id: string) => {
+  //return format { label: string, value: projectType }
+  const project = randomProjects.find((project) => project.id === id);
+  if (project === undefined) {
+    return undefined;
+  }
+  return {
+    label: project.title,
+    value: project,
+  };
 };
 
 export const pushProject = (item: projectType) => {
@@ -67,7 +81,7 @@ export const editProject = (id: string, item: projectType) => {
   const project = randomProjects.find((project) => project.id === id);
   if (project) {
     project.title = item.title;
-    project.subTitle = item.subTitle;
+    project.subtitle = item.subtitle;
     project.service = item.service;
     project.client = item.client;
     project.file = item.file;

@@ -121,30 +121,37 @@ const sidebarNavItems: navItem[] = [
       {
         id: "career-career",
         title: "Career",
-        path: "/career?tabstatus=career",
-        param: {
-          tabStatus: "career",
-        },
+        path: "/career/career",
         icon: icons.career,
         isActive: false,
       },
       {
         id: "career-job",
         title: "Job",
-        path: "/career?tabstatus=job",
-        param: {
-          tabStatus: "job",
-        },
+        path: "/career/job",
         icon: icons.career,
         isActive: false,
+        subNav: [
+          {
+            id: "career-job-id",
+            title: "Edit",
+            path: "/career/job/",
+            icon: icons.career,
+            isActive: false,
+          },
+          {
+            id: "career-job-create",
+            title: "Create",
+            path: "/career/job/create",
+            icon: icons.career,
+            isActive: false,
+          },
+        ],
       },
       {
         id: "career-applicant",
         title: "Applicant",
-        path: "/career?tabstatus=applicant",
-        param: {
-          tabStatus: "applicant",
-        },
+        path: "/career/applicant",
         icon: icons.career,
         isActive: false,
       },

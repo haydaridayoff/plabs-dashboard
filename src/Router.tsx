@@ -1,6 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import About from "./pages/About";
 import Career from "./pages/Career";
+import CareerJob from "./pages/CareerJob";
+import CareerJobForm from "./pages/CareerJobForm";
+import CareerMain from "./pages/CareerMain";
 import Contact from "./pages/Contact";
 import Ecosystem from "./pages/Ecosystem";
 import Home from "./pages/Home";
@@ -61,17 +64,24 @@ const router = createBrowserRouter([
         element: <Career />,
         children: [
           {
-            path: "job/*",
-            children: [
-              {
-                path: "create",
-                element: <ProjectCreate />,
-              },
-              {
-                path: ":id",
-                element: <ProjectCreate />,
-              },
-            ],
+            path: "career",
+            element: <CareerMain />,
+          },
+          {
+            path: "job",
+            element: <CareerJob />,
+          },
+          {
+            path: "job/:id",
+            element: <p>Job Detail</p>,
+          },
+          {
+            path: "job/create",
+            element: <CareerJobForm />,
+          },
+          {
+            path: "applicant",
+            element: <p>Applicant</p>,
           },
         ],
       },

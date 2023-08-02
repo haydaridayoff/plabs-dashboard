@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-type serviceType = {
+export type serviceType = {
   id: string;
   title: string;
   category: string;
@@ -16,11 +16,11 @@ const createRandomService = (count: number) => {
   for (let i = 0; i < count; i++) {
     obj.push({
       id: faker.string.uuid(),
-      title: faker.hacker.phrase(),
+      title: faker.lorem.slug(),
       category: faker.hacker.phrase(),
       file: {
         fileType: "document",
-        fileSrc: "",
+        fileSrc: faker.internet.url(),
       },
       description: faker.lorem.paragraph(),
     });
@@ -30,11 +30,23 @@ const createRandomService = (count: number) => {
 
 const randomService = createRandomService(100);
 
-export const getService = () => {
-  return randomService.map((project) => {
+export const getServices = () => {
+  return randomService.map((service) => {
     return {
-      label: project.title,
-      value: project,
+      label: service.title,
+      value: service,
     };
   });
+};
+
+export const getService = (id: string) => {
+  //return format { label: string, value: serviceType }
+  const service = randomService.find((service) => service.id === id);
+  if (service === undefined) {
+    return undefined;
+  }
+  return {
+    label: service!.title,
+    value: service!,
+  };
 };

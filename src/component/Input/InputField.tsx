@@ -4,8 +4,9 @@ import icons from "../../assets/icons/icons";
 
 interface Props {
   id?: string;
-  value?: string;
+  value?: string | ReadonlyArray<string> | number | undefined;
   name?: string;
+  defaultValue?: string;
   readOnly?: boolean;
   labelStyle?: string;
   inputStyle?: string;
@@ -80,6 +81,7 @@ const InputField: React.FC<Props> = (props) => {
           id={props.id}
           ref={inputRef}
           value={value}
+          defaultValue={props.defaultValue}
           onFocus={(e) => {
             setIsFocus(true);
             if (props.onFocus) props.onFocus(e);

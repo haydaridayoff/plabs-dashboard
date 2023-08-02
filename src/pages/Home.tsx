@@ -1,12 +1,15 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProject } from "../api/Project";
+import { editClient, getClients } from "../api/Clients";
+import { getProjects, projectType } from "../api/Project";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
+import DialogConfirmation from "../component/Dialog/DialogConfirmation";
 import DialogForm from "../component/Dialog/DialogFormContext";
 import DialogFormContext from "../component/Dialog/DialogFormContext";
+import DialogNewClient from "../component/Dialog/DialogNewClient";
 import DialogSelect from "../component/Dialog/DialogSelect";
 import FileInput from "../component/Input/FileInput";
 import InputField from "../component/Input/InputField";
@@ -14,7 +17,13 @@ import TextArea from "../component/Input/TextArea";
 import Section from "../component/Section/Section";
 import SidebarContext from "../component/Sidebar/sidebar-context";
 import TableBase from "../component/Table/TableBase";
-import homeData, { deleteHomeProject } from "../model/MockData/homeData";
+import homeData, {
+  addHomeClient,
+  addHomeProject,
+  deleteHomeClient,
+  deleteHomeProject,
+  editHomeClient,
+} from "../model/MockData/homeData";
 
 const Home = () => {
   const homeDataRef = React.useRef(homeData);
@@ -387,11 +396,13 @@ const Home = () => {
     {
       header: "Title",
       accessorKey: "title",
+      size: 300,
       cell: (info) => <p className="h-auto">{info.getValue() as string}</p>,
     },
     {
       header: "Image",
       accessorKey: "image",
+      size: 300,
       cell: (info) => (
         <div className="h-16 w-16 mx-auto">
           <img
@@ -404,9 +415,9 @@ const Home = () => {
     },
     {
       header: "Action",
-      size: 1,
+      size: 80,
       cell: (info) => (
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-2 h-24 justify-center">
           <button
             onClick={() => {
               //navigate root to project page
@@ -429,21 +440,12 @@ const Home = () => {
           <button
             onClick={(e) => {
               let id = info.row.original.id;
-              let newerContent = {
-                ...homeDataRef.current,
-                projects: content.projects.filter(
-                  (project) => project.id !== id,
-                ),
-              };
+              deleteHomeProject(id);
               setContent((prev) => {
                 let newContent = { ...prev };
-                newContent.projects = newContent.projects.filter(
-                  (project) => project.id !== id,
-                );
-                console.log(newContent);
+                newContent.projects = [...homeData.projects];
                 return newContent;
               });
-              deleteHomeProject(id);
             }}
           >
             <img src={icons.delete.blue} className="h-6 w-6" />
@@ -454,26 +456,29 @@ const Home = () => {
   ];
 
   const addProjectHandler = () => {
-    let project = getProject()[0].value;
+    let project = {} as projectType;
 
     const confirmHandler = () => {
-      setContent({
-        ...content,
-        projects: [
-          ...content.projects,
-          {
-            id: project.id,
-            title: project.title,
-            image: project.file.src,
-          },
-        ],
+      addHomeProject({
+        id: project.id,
+        title: project.title,
+        image: project.file.src,
+      });
+      setContent((prev) => {
+        let newContent = { ...prev };
+        newContent.projects = [...homeData.projects];
+        return newContent;
       });
     };
 
     const inputElement = (
       <DialogSelect
         label="Project"
-        options={getProject()}
+        options={getProjects().filter((project) => {
+          return !content.projects.some(
+            (contentProject) => contentProject.id === project.value.id,
+          );
+        })}
         onChange={(option) => {
           project = option.value;
         }}
@@ -489,6 +494,147 @@ const Home = () => {
     </Section>
   );
 
+  const clientColumns: ColumnDef<(typeof content.clients)[0]>[] = [
+    {
+      header: "Name",
+      size: 300,
+      accessorKey: "name",
+      cell: (info) => <p className="h-auto">{info.getValue() as string}</p>,
+    },
+    {
+      header: "Image",
+      accessorKey: "image",
+      size: 300,
+      cell: (info) => (
+        <div className="h-16 w-16 mx-auto">
+          <img
+            className="h-full w-full object-contain"
+            src={info.getValue() as string}
+            alt="client image"
+          />
+        </div>
+      ),
+    },
+    {
+      header: "Action",
+      size: 80,
+      cell: (info) => (
+        <div className="flex gap-2 h-24 justify-center">
+          <button onClick={() => editClientHandler(info.row.original.id)}>
+            <img src={icons.edit.blue} className="h-6 w-6" />
+          </button>
+          <button onClick={() => deleteClientHandler(info.row.original.id)}>
+            <img src={icons.delete.blue} className="h-6 w-6" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  const deleteClientHandler = (id: string) => {
+    const confirmHandler = () => {
+      deleteHomeClient(id);
+      setContent({
+        ...content,
+        clients: content.clients.filter((client) => client.id !== id),
+      });
+    };
+
+    const inputElement = (
+      <DialogConfirmation message="Are you sure you want to delete this client?" />
+    );
+
+    dialog.createDialog("", inputElement, confirmHandler, () => {});
+  };
+
+  const editClientHandler = (id: string) => {
+    let client = getClients().find((client) => client.value.id === id);
+
+    const confirmHandler = () => {
+      editHomeClient(client!.value.id, {
+        name: client!.value.name,
+        image: client!.value.file.src,
+      });
+
+      editClient(id, client!.value);
+
+      setContent({
+        ...content,
+        clients: content.clients.map((item) => {
+          if (item.id === id) {
+            return {
+              ...item,
+              name: client!.value.name,
+              image: client!.value.file.src,
+            };
+          }
+          return item;
+        }),
+      });
+    };
+
+    const inputElement = (
+      <DialogNewClient
+        data={client!.value}
+        onChangeName={(e) => {
+          client!.value.name = e.target.value;
+        }}
+        onChangeStatus={(option) => {
+          client!.value.status = option?.value;
+        }}
+        onChangeLogo={(e) => {
+          client!.value.file.src = URL.createObjectURL(e.target.files![0]);
+        }}
+      />
+    );
+
+    dialog.createDialog("Edit Client", inputElement, confirmHandler, () => {});
+  };
+
+  const addClientHandler = () => {
+    let client = getClients()[0].value;
+
+    const confirmHandler = () => {
+      addHomeClient({
+        id: client.id,
+        name: client.name,
+        image: client.file.src,
+      });
+
+      setContent((prev) => {
+        let newContent = { ...prev };
+        newContent.clients = [...homeData.clients];
+        return newContent;
+      });
+    };
+
+    const inputElement = (
+      <DialogSelect
+        label="Client"
+        options={getClients().filter((client) => {
+          return !content.clients.some(
+            (contentClient) => contentClient.id === client.value.id,
+          );
+        })}
+        onChange={(option) => {
+          client = option.value;
+        }}
+      />
+    );
+
+    dialog.createDialog(
+      "Create New Select Client",
+      inputElement,
+      confirmHandler,
+      () => {},
+    );
+  };
+
+  const clientTable = (
+    <Section title={"Select Client"} onClick={addClientHandler} type="add">
+      <TableBase data={content.clients} columns={clientColumns} />
+    </Section>
+  );
   //#endregion
   return (
     <>
@@ -501,6 +647,7 @@ const Home = () => {
           {brands}
           {latestWork}
           {projectTable}
+          {clientTable}
         </Card>
       </Content>
     </>

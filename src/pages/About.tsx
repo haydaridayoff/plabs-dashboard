@@ -13,6 +13,8 @@ import Content from "../component/Content/Content";
 import SidebarContext from "../component/Sidebar/sidebar-context";
 import AboutEcosystem from "./AboutEcosystem";
 import AboutMain from "./AboutMain";
+import AboutPartner from "./AboutPartner";
+import AboutPeople from "./AboutPeople";
 
 const About = () => {
   const sidebar = useContext(SidebarContext);
@@ -43,6 +45,7 @@ const About = () => {
       isActive: tab === "people" ? true : false,
     },
   ]);
+
   useEffect(() => {
     setTabLinks([
       {
@@ -67,8 +70,6 @@ const About = () => {
       },
     ]);
     !tab && navigate("/about?tabStatus=about");
-    console.log("tab", tab);
-    console.log("tabLinks", tabLinks);
   }, [tab]);
 
   console.log(tabLinks);
@@ -79,6 +80,8 @@ const About = () => {
           <CardTabs className="mb-6" items={tabLinks} />
           {tab === "about" && <AboutMain />}
           {tab === "ecosystem" && <AboutEcosystem />}
+          {tab === "partner" && <AboutPartner />}
+          {tab === "people" && <AboutPeople />}
         </Card>
       </Content>
     </>

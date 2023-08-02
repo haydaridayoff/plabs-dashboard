@@ -1,12 +1,5 @@
 import { get } from "http";
-import React, {
-  Reducer,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { Reducer, useEffect, useReducer, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   getNavItem,

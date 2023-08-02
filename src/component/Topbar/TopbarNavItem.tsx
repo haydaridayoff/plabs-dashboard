@@ -10,7 +10,6 @@ interface Props {
 
 const TopbarNavItem: React.FC<Props> = (props) => {
   const sidebar = useContext(SidebarContext);
-  console.log(sidebar.navActiveItems);
   return (
     <>
       {sidebar.navActiveItems.current.map((item) => {

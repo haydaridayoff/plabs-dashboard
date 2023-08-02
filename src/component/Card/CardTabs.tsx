@@ -19,19 +19,17 @@ const CardTabs: React.FC<Props> = (props) => {
     <div
       className={`flex border-b-2 border-[#D9D9D9] gap-6 ${props.className}`}
     >
-      <nav className="flex w-1/3">
+      <nav className="flex gap-6 w-1/3">
         {props.items?.map((item, index) => {
           return (
             <div
               key={index}
-              className="flex-1 text-center py-4 border-b-2 border-transparent"
+              className="text-center py-4 border-b-2 border-transparent"
             >
               <NavLink
                 to={item.path}
                 className={`font-jakarta text-base ${
-                  item.isActive === true
-                    ? "font-bold text-[#4487D9]"
-                    : "text-[#989898]"
+                  item.isActive === true ? "font-bold" : "text-[#989898]"
                 }`}
               >
                 {item.name}

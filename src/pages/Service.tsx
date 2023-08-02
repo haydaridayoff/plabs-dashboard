@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";
 import { isTemplateLiteralTypeSpan } from "typescript";
-import { getService } from "../api/Service";
+import { getServices } from "../api/Service";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
@@ -12,14 +12,14 @@ import Topbar from "../component/Topbar/Topbar";
 
 const Service: React.FC = () => {
   const [content, setContent] = useState(
-    getService().map((item) => item.value),
+    getServices().map((item) => item.value),
   );
 
   const serviceColumnDefs: ColumnDef<typeof content>[] = [
     {
       header: "title",
-      size: 400,
       accessorKey: "title",
+      size: 200,
       cell: (info) => (
         <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
           {info.getValue() as string}
@@ -28,19 +28,19 @@ const Service: React.FC = () => {
     },
     {
       header: "description",
-      size: 500,
       accessorKey: "description",
+      size: 300,
       cell: (info) => (
-        <span className="h-16 text-ellipsis overflow-hidden max-w-xs">
+        <p className="h-24 text-ellipsis overflow-hidden">
           {info.getValue() as string}
-        </span>
+        </p>
       ),
     },
     {
       header: "Action",
-      size: 1,
+      size: 80,
       cell: (info) => (
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-2 h-24">
           <button>
             <img src={icons.info.blue} className="h-6 w-6" />
           </button>

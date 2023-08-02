@@ -13,7 +13,7 @@ interface Props {
   selectStyle?: string;
   label?: string;
   textHelper?: string;
-  defaultValue?: string;
+  defaultValue?: { label: string; value: any };
   onChange?: (option: SingleValue<{ label: string; value: any }>) => void;
 }
 
@@ -35,7 +35,7 @@ const SelectInput: React.FC<Props> = (props) => {
           ref={selectRef}
           id={props.id}
           className={`w-full`}
-          defaultInputValue={props.defaultValue}
+          defaultValue={props.defaultValue}
           styles={{
             control: (provided, state) => ({
               ...provided,
@@ -50,9 +50,7 @@ const SelectInput: React.FC<Props> = (props) => {
           isSearchable={props.isSeachable ? props.isSeachable : true}
           options={props.options}
           value={value}
-          onChange={(option) => {
-            props.onChange && props.onChange(option);
-          }}
+          onChange={props.onChange}
         ></Select>
       </div>
     </>

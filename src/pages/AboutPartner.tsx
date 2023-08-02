@@ -1,18 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getEcosystem } from "../api/Ecosystem";
+import { getPartner } from "../api/Partner";
 import icons from "../assets/icons/icons";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
-import { ecosystemTabData } from "../model/MockData/AboutData";
+import { partnerTabData } from "../model/MockData/AboutData";
 
-const AboutEcosystem: React.FC = () => {
-  const [content, setContent] = useState(ecosystemTabData);
+const AboutPartner: React.FC = () => {
+  const [content, setContent] = useState(partnerTabData);
 
   const navigator = useNavigate();
 
-  const ecosystemColumnDefs: ColumnDef<typeof content>[] = [
+  const columnDefPartners: ColumnDef<typeof content>[] = [
     {
       header: "Name",
       size: 300,
@@ -24,13 +24,7 @@ const AboutEcosystem: React.FC = () => {
       size: 300,
       accessorKey: "image",
       cell: (info) => (
-        <img
-          src={info.getValue() as string}
-          onClick={() => {
-            console.log(info.getValue() as string);
-          }}
-          className="h-16 w-16 mx-auto"
-        />
+        <img src={info.getValue() as string} className="h-16 w-16 mx-auto" />
       ),
     },
     {
@@ -51,11 +45,11 @@ const AboutEcosystem: React.FC = () => {
 
   return (
     <>
-      <Section title="Service" type="add">
-        <TableBase data={content} columns={ecosystemColumnDefs}></TableBase>
+      <Section title="Partner" type="add">
+        <TableBase data={content} columns={columnDefPartners}></TableBase>
       </Section>
     </>
   );
 };
 
-export default AboutEcosystem;
+export default AboutPartner;

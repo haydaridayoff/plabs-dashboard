@@ -1,22 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
+import { clientsType, getClient, getClients } from "../api/Clients";
 import {
   createProject,
   editProject,
   getProject,
+  getProjects,
   projectType,
-  pushProject,
 } from "../api/Project";
-import { getService } from "../api/Service";
-import Card from "../component/Card/Card";
-import Content from "../component/Content/Content";
+import { getService, getServices, serviceType } from "../api/Service";
 import FileInput from "../component/Input/FileInput";
 import InputField from "../component/Input/InputField";
 import SelectInput from "../component/Input/SelectInput";
 import TextArea from "../component/Input/TextArea";
 import Section from "../component/Section/Section";
-import SidebarContext from "../component/Sidebar/sidebar-context";
 import { editHomeProject } from "../model/MockData/homeData";
 
 const ProjectCreate: React.FC = () => {
@@ -27,19 +25,19 @@ const ProjectCreate: React.FC = () => {
   const [content, setContent] = useState<projectType>({
     id: "",
     title: "",
-    subTitle: "",
-    service: "",
+    subtitle: "",
+    service: {} as serviceType,
     file: {
       type: "image",
       src: "",
     },
-    client: "",
+    client: {} as clientsType,
     url: "",
   });
 
   useEffect(() => {
     if (id) {
-      const project = getProject().find((item) => item.value.id === id);
+      const project = getProjects().find((item) => item.value.id === id);
       if (project) {
         setContent(project.value);
       }
@@ -62,11 +60,6 @@ const ProjectCreate: React.FC = () => {
     <>
       <Section title="Project" isLast={true} type="add">
         <div className="flex flex-col gap-5">
-          {id && (
-            <div>
-              <InputField readOnly={true} label="ID" value={content.id} />
-            </div>
-          )}
           <div>
             <InputField
               label="Title"
@@ -80,9 +73,9 @@ const ProjectCreate: React.FC = () => {
             <TextArea
               className="h-24 w-full resize-none overflow-y-auto font-jakarta text-sm font-normal"
               label="Subtitle"
-              value={content.subTitle}
+              value={content.subtitle}
               onChange={(e) => {
-                setContent({ ...content, subTitle: e.target.value });
+                setContent({ ...content, subtitle: e.target.value });
               }}
             />
           </div>
@@ -91,12 +84,14 @@ const ProjectCreate: React.FC = () => {
               <SelectInput
                 label="Service"
                 selectStyle="w-full"
-                defaultValue={content.service}
-                options={getService()}
+                value={getService(content.service.id)}
+                options={getServices()}
                 onChange={(option) => {
                   setContent({
                     ...content,
-                    service: option ? option.label : "",
+                    service: {
+                      ...option?.value,
+                    },
                   });
                 }}
               />
@@ -123,12 +118,16 @@ const ProjectCreate: React.FC = () => {
               <SelectInput
                 label="Client"
                 selectStyle="w-full"
-                defaultValue={content.client}
-                options={getService()}
+                value={getClient(content.client.id)}
+                options={getClients()}
                 onChange={(option) => {
-                  setContent({
-                    ...content,
-                    client: option ? option.label : "",
+                  const newContent = { ...content };
+                  newContent.client = {
+                    ...option?.value,
+                  };
+                  setContent((prev) => {
+                    const newestContent = { ...newContent };
+                    return newestContent;
                   });
                 }}
               />

@@ -21,15 +21,13 @@ const isMemberOfSectionType = (type: string): type is SectionType => {
 };
 
 const Section: React.FC<Props> = (props) => {
-  let sectionStyle = "flex flex-col border-b-2 border-[#D9D9D9] pb-6 mb-6";
+  let sectionStyle = `flex flex-col ${
+    !props.isLast ? "border-b-2 border-[#D9D9D9] pb-6 mb-6" : ""
+  }`;
 
   let type = isMemberOfSectionType(props.type as string)
     ? props.type
     : SectionType.Edit;
-
-  if (props.isLast) {
-    sectionStyle = sectionStyle.replace("border-b-2 border-gray-300 pb-6", "");
-  }
 
   return (
     <section className={sectionStyle + " " + props.className}>

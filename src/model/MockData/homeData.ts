@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { getProject } from "../../api/Project";
-import images from "../../assets/images/images";
+import { getClients } from "../../api/Clients";
+import { getProjects } from "../../api/Project";
 
 export type homeType = {
   hero: string;
@@ -39,15 +39,14 @@ export type homeType = {
   }[];
   clients: {
     id: string;
-    title: string;
+    name: string;
     image: string;
   }[];
 };
 
 const makeDummyProject = () => {
   //get random 50 project
-  console.log("getRandomProject");
-  const projects = getProject().map((project) => project.value);
+  const projects = getProjects().map((project) => project.value);
   const randomProjects = faker.helpers.shuffle(projects).slice(0, 50);
   return [
     ...randomProjects.map((project) => {
@@ -60,10 +59,45 @@ const makeDummyProject = () => {
   ];
 };
 
+const makeDummyClients = () => {
+  const clients = getClients().map((client) => client.value);
+  const randomClients = faker.helpers.shuffle(clients).slice(0, 50);
+  return [
+    ...randomClients.map((client) => {
+      return {
+        id: client.id,
+        name: client.name,
+        image: client.file.src,
+      };
+    }),
+  ];
+};
+
 const dummyProject = makeDummyProject();
+const dummyClients = makeDummyClients();
+
+export const addHomeProject = (item: {
+  id: string;
+  title: string;
+  image: string;
+}) => {
+  homeData.projects.push(item);
+};
+
+export const addHomeClient = (item: {
+  id: string;
+  name: string;
+  image: string;
+}) => {
+  homeData.clients.push(item);
+};
 
 export const deleteHomeProject = (id: string) => {
   homeData.projects = homeData.projects.filter((project) => project.id !== id);
+};
+
+export const deleteHomeClient = (id: string) => {
+  homeData.clients = homeData.clients.filter((client) => client.id !== id);
 };
 
 export const editHomeProject = (
@@ -76,6 +110,18 @@ export const editHomeProject = (
   const index = homeData.projects.findIndex((project) => project.id === id);
   homeData.projects[index].title = item.title;
   homeData.projects[index].image = item.image;
+};
+
+export const editHomeClient = (
+  id: string,
+  item: {
+    name: string;
+    image: string;
+  },
+) => {
+  const index = homeData.clients.findIndex((client) => client.id === id);
+  homeData.clients[index].name = item.name;
+  homeData.clients[index].image = item.image;
 };
 
 const homeData: homeType = {
@@ -120,9 +166,7 @@ const homeData: homeType = {
   },
   latestWork: "Recent Works",
   projects: dummyProject,
-  clients: makeDummyProject(),
+  clients: dummyClients,
 };
-
-console.log("homeData", homeData);
 
 export default homeData;
