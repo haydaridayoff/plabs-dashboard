@@ -47,7 +47,7 @@ const AboutPeople: React.FC = () => {
 
   return (
     <>
-      <Section title="Partner" type="add">
+      <Section title="Partner" type="add" isLast>
         <TableBase data={content} columns={columnDefPeople}></TableBase>
       </Section>
     </>

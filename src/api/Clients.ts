@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { projectType } from "./Project";
 
 export enum clientStatus {
   active,
@@ -74,11 +73,22 @@ export const deleteClient = (id: string) => {
   }
 };
 
+/*
+ * @deprecated updated to
+ * @see updateClient
+ */
 export const editClient = (id: string, item: clientsType) => {
   const client = randomClients.find((item) => item.id === id);
   if (client) {
     client.name = item.name;
     client.status = item.status;
     client.file = item.file;
+  }
+};
+
+export const updateClient = (item: clientsType) => {
+  const index = randomClients.findIndex((client) => client.id === item.id);
+  if (index !== -1) {
+    randomClients[index] = item;
   }
 };

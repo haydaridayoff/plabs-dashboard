@@ -191,6 +191,7 @@ const AboutMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
+        isLast
       >
         <InputField
           value={!isEditing ? content.people : editContent.people}

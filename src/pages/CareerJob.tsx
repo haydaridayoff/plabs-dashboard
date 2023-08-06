@@ -66,11 +66,11 @@ const CareerJob: React.FC = () => {
     },
     {
       header: "Status",
-      size: 80,
+      size: 100,
       accessorKey: "status",
       cell: (info) => (
         <div
-          className={`border rounded-lg px-2 py-1 text-center font-bold ${
+          className={`border rounded-lg px-2 py-1 text-center font-bold w-20 ${
             info.getValue() === jobStatus.on
               ? "border-[#39BD36] bg-[#D1F6D0] text-[#39BD36]"
               : "border-red-500 bg-red-300 text-red-500"
@@ -98,7 +98,7 @@ const CareerJob: React.FC = () => {
 
   return (
     <>
-      <Section title="Job" type="Add">
+      <Section title="Job" type="add" isLast>
         <TableBase
           data={getJobs().map((item) => item.value)}
           columns={jobColumnDefs}

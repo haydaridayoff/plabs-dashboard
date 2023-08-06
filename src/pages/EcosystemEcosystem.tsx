@@ -1,36 +1,35 @@
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getPartner } from "../api/Partner";
+import { ecosystemType, getEcosystems } from "../api/Ecosystem";
 import icons from "../assets/icons/icons";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
-import { partnerTabData } from "../model/MockData/AboutData";
 
-const AboutPartner: React.FC = () => {
-  const [content, setContent] = useState(partnerTabData);
-
-  const navigator = useNavigate();
-
-  const columnDefPartners: ColumnDef<typeof content>[] = [
+const EcosystemEcosystem: React.FC = () => {
+  const ecosystemColumnDefs: ColumnDef<ecosystemType>[] = [
     {
       header: "Name",
-      size: 300,
+      size: 200,
       accessorKey: "name",
       cell: (info) => <p className="h-auto">{info.getValue() as string}</p>,
     },
     {
       header: "Image",
-      size: 300,
-      accessorKey: "image",
+      size: 200,
+      accessorKey: "file.src",
       cell: (info) => (
-        <img src={info.getValue() as string} className="h-16 w-16 mx-auto" />
+        <div className="h-16 w-16">
+          <img
+            src={info.getValue() as string}
+            className="object-cover h-full w-auto"
+            alt=""
+          />
+        </div>
       ),
     },
     {
       header: "Action",
-      size: 100,
-      cell: (info) => (
+      size: 80,
+      cell: () => (
         <div className="flex justify-center gap-2 h-24">
           <button>
             <img src={icons.edit.blue} className="h-6 w-6" />
@@ -45,11 +44,14 @@ const AboutPartner: React.FC = () => {
 
   return (
     <>
-      <Section title="Partner" type="add" isLast>
-        <TableBase data={content} columns={columnDefPartners}></TableBase>
+      <Section title="Ecosystem" type="add" isLast>
+        <TableBase
+          data={getEcosystems().map((item) => item.value)}
+          columns={ecosystemColumnDefs}
+        ></TableBase>
       </Section>
     </>
   );
 };
 
-export default AboutPartner;
+export default EcosystemEcosystem;

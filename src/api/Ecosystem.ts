@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-type ecosystemType = {
+export type ecosystemType = {
   id: string;
   name: string;
   status: number;
@@ -18,7 +18,7 @@ enum ecosystemStatus {
   deleted,
 }
 
-const createRandomEcosystem = (count: number) => {
+const createRandomEcosystems = (count: number) => {
   const obj: ecosystemType[] = [];
   for (let i = 0; i < count; i++) {
     obj.push({
@@ -38,13 +38,45 @@ const createRandomEcosystem = (count: number) => {
   return obj;
 };
 
-const randomEcosystem = createRandomEcosystem(100);
+const randomEcosystem = createRandomEcosystems(100);
 
-export const getEcosystem = () => {
+export const getEcosystems = () => {
   return randomEcosystem.map((project) => {
     return {
       label: project.name,
       value: project,
     };
   });
+};
+
+export const getEcosystemById = (id: string) => {
+  //return format { label: string, value: ecosystemType }
+  const ecosystem = randomEcosystem.find((item) => item.id === id);
+  if (ecosystem) {
+    return {
+      label: ecosystem.name,
+      value: ecosystem,
+    };
+  }
+};
+
+export const createEcosystem = (item: ecosystemType) => {
+  item.id = faker.string.uuid();
+  randomEcosystem.push(item);
+};
+
+export const updateEcosystem = (item: ecosystemType) => {
+  const index = randomEcosystem.findIndex(
+    (ecosystem) => ecosystem.id === item.id,
+  );
+  if (index !== -1) {
+    randomEcosystem[index] = item;
+  }
+};
+
+export const deleteEcosystem = (id: string) => {
+  const index = randomEcosystem.findIndex((ecosystem) => ecosystem.id === id);
+  if (index !== -1) {
+    randomEcosystem.splice(index, 1);
+  }
 };

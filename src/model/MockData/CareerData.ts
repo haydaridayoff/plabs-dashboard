@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { getApplicants } from "../../api/Applicant";
-import { getJobs, status as jobStatus } from "../../api/Job";
+import { getJobs, status as jobStatus, jobType } from "../../api/Job";
 
 export type careerTypeData = {
   id: string;
@@ -39,7 +39,7 @@ type applicantTabsData = {
   cvLink: string;
   linkedInUrl: string;
   portofolioUrl: string;
-  job: string;
+  job: jobType;
   status: applicantStatus;
 };
 

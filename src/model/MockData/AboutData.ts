@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { getEcosystem } from "../../api/Ecosystem";
+import { getEcosystems } from "../../api/Ecosystem";
 import { getPartner } from "../../api/Partner";
 import { getPeople } from "../../api/People";
 import images from "../../assets/images/images";
@@ -41,7 +41,7 @@ export type peopleTabType = {
 
 const makeDummyEcosystem = () => {
   //get 50 random ecosystem
-  const ecosystem = getEcosystem();
+  const ecosystem = getEcosystems();
   const obj: ecosystemTabType[] = [];
   faker.helpers
     .shuffle(ecosystem)

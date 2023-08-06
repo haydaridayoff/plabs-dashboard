@@ -1,7 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getEcosystem } from "../api/Ecosystem";
 import icons from "../assets/icons/icons";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
@@ -51,7 +50,7 @@ const AboutEcosystem: React.FC = () => {
 
   return (
     <>
-      <Section title="Service" type="add">
+      <Section title="Service" type="add" isLast>
         <TableBase data={content} columns={ecosystemColumnDefs}></TableBase>
       </Section>
     </>

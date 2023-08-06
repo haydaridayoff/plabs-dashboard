@@ -4,6 +4,7 @@ import icons from "../../assets/icons/icons";
 enum SectionType {
   Edit = "edit",
   Add = "add",
+  None = "none",
 }
 
 interface Props extends PropsWithChildren {
@@ -27,41 +28,49 @@ const Section: React.FC<Props> = (props) => {
 
   let type = isMemberOfSectionType(props.type as string)
     ? props.type
-    : SectionType.Edit;
+    : SectionType.None;
 
   return (
     <section className={sectionStyle + " " + props.className}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-bold text-base">{props.title}</h2>
-        <button
-          type="button"
-          onClick={props.onClick ? props.onClick : () => {}}
-          className="flex gap-2"
-        >
-          <img
-            src={
-              !props.isEditing
-                ? props.type !== SectionType.Add
-                  ? icons.edit.gray
-                  : icons.add.gray
-                : icons.cancelEdit.orange
-            }
-            alt="edit"
-          />
-          <span
-            style={!props.isEditing ? {} : { color: "#FE7E30" }}
-            className="text-sm text-[#989898]"
+        {type !== SectionType.None && (
+          <button
+            type="button"
+            onClick={props.onClick ? props.onClick : () => {}}
+            className="flex gap-2"
           >
-            {type === SectionType.Edit &&
-              (!props.isEditing ? "Edit" : "Cancel")}
-            {type === SectionType.Add && "Add"}
-          </span>
-        </button>
+            <img
+              src={
+                !props.isEditing
+                  ? props.type !== SectionType.Add
+                    ? icons.edit.gray
+                    : icons.add.gray
+                  : icons.cancelEdit.orange
+              }
+              alt="edit"
+            />
+            <span
+              style={!props.isEditing ? {} : { color: "#FE7E30" }}
+              className="text-sm text-[#989898]"
+            >
+              {type === SectionType.Edit &&
+                (!props.isEditing ? "Edit" : "Cancel")}
+              {type === SectionType.Add && "Add"}
+            </span>
+          </button>
+        )}
       </div>
       {SectionType.Edit === type && (
         <form
           className="flex flex-col"
-          onSubmit={props.onSubmit ? props.onSubmit : () => {}}
+          onSubmit={
+            props.onSubmit
+              ? props.onSubmit
+              : (e) => {
+                  e.preventDefault();
+                }
+          }
         >
           {props.children}
           {props.isEditing && (
@@ -74,7 +83,7 @@ const Section: React.FC<Props> = (props) => {
           )}
         </form>
       )}
-      {SectionType.Add === props.type && (
+      {SectionType.Edit !== type && (
         <div className="flex flex-col">{props.children}</div>
       )}
     </section>

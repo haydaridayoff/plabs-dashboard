@@ -63,6 +63,7 @@ const ProjectDashboard: React.FC = () => {
           //navigate back to root
           navigator("/project/create", { state: { fromDashboard: true } });
         }}
+        isLast
       >
         <TableBase data={content} columns={projectColumnDefs}></TableBase>
       </Section>

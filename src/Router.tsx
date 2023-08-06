@@ -1,13 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
 import About from "./pages/About";
 import Career from "./pages/Career";
+import CareerAplicant from "./pages/CareerApplicant";
 import CareerJob from "./pages/CareerJob";
 import CareerJobForm from "./pages/CareerJobForm";
 import CareerMain from "./pages/CareerMain";
 import Contact from "./pages/Contact";
 import Ecosystem from "./pages/Ecosystem";
+import EcosystemClient from "./pages/EcosystemClient";
+import EcosystemEcosystem from "./pages/EcosystemEcosystem";
+import EcosystemPartner from "./pages/EcosystemPartner";
 import Home from "./pages/Home";
 import Journal from "./pages/Journal";
+import JournalDashboard from "./pages/JournalDashboard";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import ProjectCreate from "./pages/ProjectCreate";
@@ -81,7 +86,7 @@ const router = createBrowserRouter([
           },
           {
             path: "applicant",
-            element: <p>Applicant</p>,
+            element: <CareerAplicant />,
           },
         ],
       },
@@ -90,12 +95,40 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path: "ecosystem",
+        path: "ecosystem/*",
         element: <Ecosystem />,
+        children: [
+          {
+            path: "client",
+            element: <EcosystemClient />,
+          },
+          {
+            path: "ecosystem",
+            element: <EcosystemEcosystem />,
+          },
+          {
+            path: "partner",
+            element: <EcosystemPartner />,
+          },
+        ],
       },
       {
-        path: "journal",
+        path: "journal/",
         element: <Journal />,
+        children: [
+          {
+            path: "",
+            element: <JournalDashboard />,
+          },
+          {
+            path: ":id",
+            element: <p>Journal Detail</p>,
+          },
+          {
+            path: "create",
+            element: <p>Journal Create</p>,
+          },
+        ],
       },
     ],
   },
