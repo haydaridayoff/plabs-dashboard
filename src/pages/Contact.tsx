@@ -71,7 +71,7 @@ const Contact: React.FC = () => {
     <>
       <Content>
         <Card>
-          <Section title="Contact" isLast>
+          <Section title="Contact" type="add" isLast>
             <TableBase
               columns={contactColumnDefs}
               data={getContact().map((item) => item.value)}

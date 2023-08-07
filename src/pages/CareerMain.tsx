@@ -28,7 +28,8 @@ const CareerMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
-        isLast={true}
+        type="edit"
+        isLast
       >
         <div className="flex flex-col gap-3">
           <div className="w-full">

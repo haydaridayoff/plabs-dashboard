@@ -28,6 +28,7 @@ const AboutMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
+        type="edit"
       >
         <div className="flex flex-col gap-5">
           <div>
@@ -123,6 +124,7 @@ const AboutMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
+        type="edit"
       >
         <InputField
           value={!isEditing ? content.hero : editContent.hero}
@@ -140,6 +142,7 @@ const AboutMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
+        type="edit"
       >
         <InputField
           value={!isEditing ? content.solution : editContent.solution}
@@ -157,6 +160,7 @@ const AboutMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
+        type="edit"
       >
         <InputField
           value={!isEditing ? content.ecosystem : editContent.ecosystem}
@@ -174,6 +178,7 @@ const AboutMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
+        type="edit"
       >
         <InputField
           value={!isEditing ? content.partner : editContent.partner}
@@ -191,6 +196,7 @@ const AboutMain: React.FC = () => {
         onClick={toggleEditing}
         onSubmit={submitDataHandler}
         isEditing={isEditing}
+        type="edit"
         isLast
       >
         <InputField

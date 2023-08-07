@@ -64,7 +64,8 @@ const JournalDashboard: React.FC = () => {
     setEditContent(content);
   };
 
-  const submitHandler = () => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setContent(editContent);
     toggleIsEditing();
   };

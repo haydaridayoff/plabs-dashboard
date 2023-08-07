@@ -1,16 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { editClient, getClients } from "../api/Clients";
+import { clientsType, editClient, getClients } from "../api/Clients";
 import { getProjects, projectType } from "../api/Project";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
 import DialogConfirmation from "../component/Dialog/DialogConfirmation";
-import DialogForm from "../component/Dialog/DialogFormContext";
 import DialogFormContext from "../component/Dialog/DialogFormContext";
 import DialogNewClient from "../component/Dialog/DialogNewClient";
 import DialogSelect from "../component/Dialog/DialogSelect";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import FileInput from "../component/Input/FileInput";
 import InputField from "../component/Input/InputField";
 import TextArea from "../component/Input/TextArea";
@@ -30,8 +30,6 @@ const Home = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [content, setContent] = useState(homeDataRef.current);
   const [editContent, setEditContent] = useState(content);
-  //useState to refresh component when content is changed
-  const [refresh, setRefresh] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,6 +50,7 @@ const Home = () => {
       onClick={toggleEditing}
       isEditing={isEditing}
       onSubmit={submitEditHandler}
+      type="edit"
     >
       <InputField
         readOnly={!isEditing}
@@ -73,6 +72,7 @@ const Home = () => {
       onClick={toggleEditing}
       isEditing={isEditing}
       onSubmit={submitEditHandler}
+      type="edit"
     >
       <InputField
         label="Title"
@@ -162,6 +162,7 @@ const Home = () => {
       onClick={toggleEditing}
       isEditing={isEditing}
       onSubmit={submitEditHandler}
+      type="edit"
     >
       <InputField
         label="Title"
@@ -250,6 +251,7 @@ const Home = () => {
       isEditing={isEditing}
       onClick={toggleEditing}
       onSubmit={submitEditHandler}
+      type="edit"
     >
       <div className="flex flex-col gap-5">
         <div>
@@ -301,6 +303,7 @@ const Home = () => {
       onClick={toggleEditing}
       isEditing={isEditing}
       onSubmit={submitEditHandler}
+      type="edit"
     >
       <div className="flex flex-col gap-5">
         <div>
@@ -368,6 +371,7 @@ const Home = () => {
       onClick={toggleEditing}
       isEditing={isEditing}
       onSubmit={submitEditHandler}
+      type="edit"
     >
       <div className="flex flex-col gap-5">
         <InputField
@@ -439,13 +443,21 @@ const Home = () => {
           </button>
           <button
             onClick={(e) => {
-              let id = info.row.original.id;
-              deleteHomeProject(id);
-              setContent((prev) => {
-                let newContent = { ...prev };
-                newContent.projects = [...homeData.projects];
-                return newContent;
-              });
+              dialog.openDialog(
+                DialogValidation({
+                  title: "Delete Project",
+                  message: "Are you sure you want to delete this project?",
+                  onConfirm: () => {
+                    let id = info.row.original.id;
+                    deleteHomeProject(id);
+                    setContent((prev) => {
+                      let newContent = { ...prev };
+                      newContent.projects = [...homeData.projects];
+                      return newContent;
+                    });
+                  },
+                }),
+              );
             }}
           >
             <img src={icons.delete.blue} className="h-6 w-6" />
@@ -471,21 +483,25 @@ const Home = () => {
       });
     };
 
-    const inputElement = (
+    const inputElement: React.ReactNode = (
       <DialogSelect
         label="Project"
-        options={getProjects().filter((project) => {
-          return !content.projects.some(
-            (contentProject) => contentProject.id === project.value.id,
-          );
-        })}
-        onChange={(option) => {
-          project = option.value;
+        title="Add Project"
+        onSubmit={confirmHandler}
+        selectInput={{
+          options: getProjects().filter((project) => {
+            return !content.projects.some(
+              (contentProject) => contentProject.id === project.value.id,
+            );
+          }),
+          onChange: (option) => {
+            project = option?.value as projectType;
+          },
         }}
       />
     );
 
-    dialog.createDialog("Add Project", inputElement, confirmHandler, () => {});
+    dialog.openDialog(inputElement);
   };
 
   const projectTable = (
@@ -540,23 +556,27 @@ const Home = () => {
       });
     };
 
-    const inputElement = (
-      <DialogConfirmation message="Are you sure you want to delete this client?" />
+    const InputElement: React.ReactNode = (
+      <DialogValidation
+        title="Delete Client"
+        message="Are you sure you want to delete this client?"
+        onConfirm={confirmHandler}
+      />
     );
 
-    dialog.createDialog("", inputElement, confirmHandler, () => {});
+    dialog.openDialog(InputElement);
   };
 
   const editClientHandler = (id: string) => {
     let client = getClients().find((client) => client.value.id === id);
 
-    const confirmHandler = () => {
-      editHomeClient(client!.value.id, {
-        name: client!.value.name,
-        image: client!.value.file.src,
+    const confirmHandler = (client: clientsType) => {
+      editHomeClient(client.id, {
+        name: client.name,
+        image: client.file.src,
       });
 
-      editClient(id, client!.value);
+      editClient(id, client);
 
       setContent({
         ...content,
@@ -564,8 +584,8 @@ const Home = () => {
           if (item.id === id) {
             return {
               ...item,
-              name: client!.value.name,
-              image: client!.value.file.src,
+              name: client.name,
+              image: client.file.src,
             };
           }
           return item;
@@ -573,22 +593,26 @@ const Home = () => {
       });
     };
 
-    const inputElement = (
+    const inputElement: React.ReactNode = (
       <DialogNewClient
-        data={client!.value}
-        onChangeName={(e) => {
-          client!.value.name = e.target.value;
+        userInput={{
+          data: client!.value,
+          onChangeName: (e) => {
+            client!.value.name = e.target.value;
+          },
+          onChangeStatus: (option) => {
+            client!.value.status = option?.value;
+          },
+          onChangeLogo: (e) => {
+            client!.value.file.src = URL.createObjectURL(e.target.files![0]);
+          },
         }}
-        onChangeStatus={(option) => {
-          client!.value.status = option?.value;
-        }}
-        onChangeLogo={(e) => {
-          client!.value.file.src = URL.createObjectURL(e.target.files![0]);
-        }}
+        onSubmit={confirmHandler}
+        title="Edit Client"
       />
     );
 
-    dialog.createDialog("Edit Client", inputElement, confirmHandler, () => {});
+    dialog.openDialog(inputElement);
   };
 
   const addClientHandler = () => {
@@ -608,26 +632,25 @@ const Home = () => {
       });
     };
 
-    const inputElement = (
-      <DialogSelect
-        label="Client"
-        options={getClients().filter((client) => {
-          return !content.clients.some(
-            (contentClient) => contentClient.id === client.value.id,
-          );
-        })}
-        onChange={(option) => {
-          client = option.value;
-        }}
-      />
-    );
+    const inputElement: React.FC = () => {
+      return (
+        <DialogSelect
+          label="Client"
+          options={getClients().filter((client) => {
+            return !content.clients.some(
+              (contentClient) => contentClient.id === client.value.id,
+            );
+          })}
+          onChange={(option) => {
+            client = option.value;
+          }}
+        />
+      );
+    };
 
-    dialog.createDialog(
-      "Create New Select Client",
-      inputElement,
-      confirmHandler,
-      () => {},
-    );
+    dialog.createDialog("Create New Select Client", inputElement, {
+      onConfirm: confirmHandler,
+    });
   };
 
   const clientTable = (

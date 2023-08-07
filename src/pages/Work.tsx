@@ -33,6 +33,7 @@ const Work = () => {
             onClick={toggleEditing}
             isEditing={isEditing}
             onSubmit={submitHandler}
+            type="edit"
           >
             <div>
               <InputField

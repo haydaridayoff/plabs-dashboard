@@ -54,11 +54,16 @@ const ProjectCreate: React.FC = () => {
       createProject(content);
     }
     navigate(-1);
-    console.log(content);
   };
   return (
     <>
-      <Section title="Project" isLast={true} type="add">
+      <Section
+        title="Project"
+        isLast={true}
+        type="edit"
+        onClick={() => navigate(-1)}
+        isEditing
+      >
         <div className="flex flex-col gap-5">
           <div>
             <InputField

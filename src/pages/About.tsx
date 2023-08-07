@@ -72,7 +72,6 @@ const About = () => {
     !tab && navigate("/about?tabStatus=about");
   }, [tab]);
 
-  console.log(tabLinks);
   return (
     <>
       <Content>
