@@ -10,12 +10,19 @@ type Props = {
 
 const DialogValidation: React.FC<Props> = (props) => {
   const { title, message, onConfirm, onCancel } = props;
+
+  const submitHandler = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    onConfirm();
+  };
+
   return (
     <DialogBase title={title} closeDialog={onCancel}>
       <p>{message}</p>
       <DialogButtonInput
         onCancel={onCancel}
-        submitHandler={onConfirm}
+        onSubmit={submitHandler}
         submitType="button"
         submitText="OK"
       />

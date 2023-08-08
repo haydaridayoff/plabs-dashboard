@@ -30,19 +30,13 @@ const status = [
 ];
 
 const isDataFilled = (data: clientsType) => {
-  if (
-    data &&
-    data.name !== "" &&
-    data.status &&
-    data.file &&
-    data.file.src !== ""
-  ) {
+  if (data && data.name !== "" && data.status !== undefined) {
     return false;
   }
   return true;
 };
 
-const DialogNewClient: React.FC<Props> = (props) => {
+const DialogClient: React.FC<Props> = (props) => {
   const [content, setContent] = useState<clientsType>(
     props.userInput.data ? props.userInput.data : ({} as clientsType),
   );
@@ -54,8 +48,9 @@ const DialogNewClient: React.FC<Props> = (props) => {
     <DialogBase title={props.title} closeDialog={props.closeDialog}>
       <DialogFormInput
         isSubmitDisabled={isSubmitDisabled}
-        submitHandler={(e) => {
+        onSubmit={(e) => {
           e.preventDefault();
+          console.log(content);
           props.onSubmit(content);
         }}
       >
@@ -113,4 +108,4 @@ const DialogNewClient: React.FC<Props> = (props) => {
   );
 };
 
-export default DialogNewClient;
+export default DialogClient;

@@ -20,17 +20,29 @@ type Props = {
       label: string;
       value: any;
     };
-    onChange: (option: SingleValue<{ label: string; value: any }>) => void;
+    onChange?: (option: SingleValue<{ label: string; value: any }>) => void;
   };
   closeDialog?: () => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (value: any) => void;
 };
 const DialogSelect: React.FC<Props> = (props) => {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-  const [content, setContent] = useState(props.selectInput.value);
+  const [content, setContent] = useState(
+    props.selectInput.value
+      ? props.selectInput.value
+      : props.selectInput.defaultValue
+      ? props.selectInput.defaultValue
+      : undefined,
+  );
 
-  const onChangeHandler = () => {
-    if (content) {
+  const onChangeHandler = (
+    option: SingleValue<{
+      label: string;
+      value: any;
+    }>,
+  ) => {
+    if (option) {
+      setContent({ label: option?.label, value: option?.value });
       setIsSubmitDisabled(false);
     } else {
       setIsSubmitDisabled(true);
@@ -41,9 +53,9 @@ const DialogSelect: React.FC<Props> = (props) => {
     <DialogBase title={props.title} closeDialog={props.closeDialog}>
       <DialogFormInput
         isSubmitDisabled={isSubmitDisabled}
-        submitHandler={(e) => {
+        onSubmit={(e) => {
           e.preventDefault();
-          props.onSubmit(e);
+          props.onSubmit(content?.value);
         }}
         onCancel={props.closeDialog}
       >
@@ -53,8 +65,8 @@ const DialogSelect: React.FC<Props> = (props) => {
             options={props.selectInput.options}
             defaultValue={props.selectInput.defaultValue}
             onChange={(option) => {
-              props.selectInput.onChange(option);
-              onChangeHandler();
+              props.selectInput.onChange && props.selectInput.onChange(option);
+              onChangeHandler(option);
             }}
           />
         </div>

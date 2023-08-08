@@ -44,7 +44,8 @@ const ProjectCreate: React.FC = () => {
     }
   }, [id]);
 
-  const submitHandler = () => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (id !== "" && id !== undefined) {
       //edit
       editProject(id, content);
@@ -61,6 +62,8 @@ const ProjectCreate: React.FC = () => {
         title="Project"
         isLast={true}
         type="edit"
+        onSubmit={submitHandler}
+        submitButtonStyle="w-40 mx-auto"
         onClick={() => navigate(-1)}
         isEditing
       >
@@ -148,13 +151,13 @@ const ProjectCreate: React.FC = () => {
             </div>
           </div>
         </div>
-        <button
+        {/* <button
           type="button"
           onClick={submitHandler}
-          className="w-40 mx-auto rounded-md bg-[#0AB663] text-center text-sm font-semibold font text-[#FAFAFA] shadow-sm px-4 py-2 mt-4 self-start"
+          className="w-40 mx-auto rounded-md bg-[#0AB663] text-center text-sm font-semibold font text-[#FAFAFA] shadow-sm px-4 py-2 mt-4"
         >
           Save
-        </button>
+        </button> */}
       </Section>
     </>
   );

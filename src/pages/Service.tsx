@@ -1,21 +1,29 @@
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { isTemplateLiteralTypeSpan } from "typescript";
-import { getServices } from "../api/Service";
+import {
+  createService,
+  getServices,
+  serviceType,
+  updateService,
+} from "../api/Service";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
+import DialogFormContext from "../component/Dialog/DialogFormContext";
+import DialogService, {
+  getBlankService,
+} from "../component/Dialog/DialogService";
 import Section from "../component/Section/Section";
 import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import TableBase from "../component/Table/TableBase";
-import Topbar from "../component/Topbar/Topbar";
 
 const Service: React.FC = () => {
   const [content, setContent] = useState(
     getServices().map((item) => item.value),
   );
 
-  const serviceColumnDefs: ColumnDef<typeof content>[] = [
+  const serviceColumnDefs: ColumnDef<serviceType>[] = [
     {
       header: "title",
       accessorKey: "title",
@@ -44,7 +52,7 @@ const Service: React.FC = () => {
           <button>
             <img src={icons.info.blue} className="h-6 w-6" />
           </button>
-          <button>
+          <button onClick={(e) => editService(info.row.original)}>
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
           <button>
@@ -55,11 +63,43 @@ const Service: React.FC = () => {
     },
   ];
 
+  const dialog = useContext(DialogFormContext);
+
+  const editService = (data: serviceType) => {
+    const inputElement = (
+      <DialogService
+        data={data}
+        title="Edit Service"
+        onSubmit={(item) => {
+          updateService(item);
+          setContent([...getServices().map((item) => item.value)]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
+  const addService = () => {
+    const inputElement = (
+      <DialogService
+        title="Add Service"
+        onSubmit={(item) => {
+          createService(item);
+          setContent([...getServices().map((item) => item.value)]);
+        }}
+        data={getBlankService()}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
   return (
     <>
       <Content>
         <Card>
-          <Section title="Service" type="add">
+          <Section title="Service" type="add" onClick={addService}>
             <TableBase data={content} columns={serviceColumnDefs}></TableBase>
           </Section>
         </Card>

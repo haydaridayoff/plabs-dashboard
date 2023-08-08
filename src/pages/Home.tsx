@@ -6,9 +6,8 @@ import { getProjects, projectType } from "../api/Project";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
-import DialogConfirmation from "../component/Dialog/DialogConfirmation";
+import DialogClient from "../component/Dialog/DialogClient";
 import DialogFormContext from "../component/Dialog/DialogFormContext";
-import DialogNewClient from "../component/Dialog/DialogNewClient";
 import DialogSelect from "../component/Dialog/DialogSelect";
 import DialogValidation from "../component/Dialog/DialogValidation";
 import FileInput from "../component/Input/FileInput";
@@ -571,6 +570,7 @@ const Home = () => {
     let client = getClients().find((client) => client.value.id === id);
 
     const confirmHandler = (client: clientsType) => {
+      console.log(client);
       editHomeClient(client.id, {
         name: client.name,
         image: client.file.src,
@@ -594,7 +594,7 @@ const Home = () => {
     };
 
     const inputElement: React.ReactNode = (
-      <DialogNewClient
+      <DialogClient
         userInput={{
           data: client!.value,
           onChangeName: (e) => {
@@ -616,9 +616,7 @@ const Home = () => {
   };
 
   const addClientHandler = () => {
-    let client = getClients()[0].value;
-
-    const confirmHandler = () => {
+    const confirmHandler = (client: clientsType) => {
       addHomeClient({
         id: client.id,
         name: client.name,
@@ -632,25 +630,22 @@ const Home = () => {
       });
     };
 
-    const inputElement: React.FC = () => {
-      return (
-        <DialogSelect
-          label="Client"
-          options={getClients().filter((client) => {
+    const inputElement: React.ReactNode = (
+      <DialogSelect
+        label="Client"
+        title="Create New Select Client"
+        onSubmit={confirmHandler}
+        selectInput={{
+          options: getClients().filter((client) => {
             return !content.clients.some(
               (contentClient) => contentClient.id === client.value.id,
             );
-          })}
-          onChange={(option) => {
-            client = option.value;
-          }}
-        />
-      );
-    };
+          }),
+        }}
+      />
+    );
 
-    dialog.createDialog("Create New Select Client", inputElement, {
-      onConfirm: confirmHandler,
-    });
+    dialog.openDialog(inputElement);
   };
 
   const clientTable = (

@@ -39,6 +39,22 @@ export const getServices = () => {
   });
 };
 
+export const updateService = (service: serviceType) => {
+  const index = randomService.findIndex((s) => s.id === service.id);
+  randomService[index] = service;
+};
+
+export const deleteService = (id: string) => {
+  const index = randomService.findIndex((s) => s.id === id);
+  randomService.splice(index, 1);
+};
+
+export const createService = (service: serviceType) => {
+  //add to randomService array to the first index
+  service.id = faker.string.uuid();
+  randomService.unshift(service);
+};
+
 export const getService = (id: string) => {
   //return format { label: string, value: serviceType }
   const service = randomService.find((service) => service.id === id);

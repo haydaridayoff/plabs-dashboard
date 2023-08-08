@@ -1,16 +1,25 @@
+import { useContext } from "react";
+import DialogFormContext from "../DialogFormContext";
 import DialogButtonInput from "./DialogButtonInput";
 
 type Props = {
   children: React.ReactNode;
   submitText?: string;
-  submitHandler: (event: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onCancel?: () => void;
   isSubmitDisabled: boolean;
 };
 
 const DialogFormInput: React.FC<Props> = (props) => {
-  const { submitHandler, onCancel, isSubmitDisabled, submitText, children } =
-    props;
+  const { onSubmit, onCancel, isSubmitDisabled, submitText, children } = props;
+  const dialog = useContext(DialogFormContext);
+
+  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("submitHandler");
+    onSubmit(event);
+    dialog.closeDialog();
+  };
+
   return (
     <form
       onSubmit={(e) => {

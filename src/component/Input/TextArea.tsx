@@ -2,6 +2,7 @@ import React from "react";
 
 interface Props {
   value?: string;
+  defaultValue?: string;
   name?: string;
   readOnly?: boolean;
   className?: string;
@@ -19,6 +20,7 @@ const TextArea: React.FC<Props> = (props) => {
         name={props.name ? props.name : undefined}
         className={`border border-[#BABABA] rounded-md mt-2 py-3 px-4 text-[#666666] focus:border-[#4487D9] focus:outline-none ${props.className}`}
         value={value}
+        defaultValue={props.defaultValue}
         readOnly={readOnly}
         placeholder={readOnly ? value : undefined}
         style={readOnly ? {} : { color: "black" }}
