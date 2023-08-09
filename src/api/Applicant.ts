@@ -66,7 +66,7 @@ export const getApplicantById = (id: string) => {
 
 export const createApplicant = (item: applicantType) => {
   item.id = faker.string.uuid();
-  randomApplicants.push(item);
+  randomApplicants.unshift(item);
 };
 
 export const updateApplicant = (item: applicantType) => {

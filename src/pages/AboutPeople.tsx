@@ -1,17 +1,33 @@
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  createBlankPerson,
+  createPerson,
+  deletePerson,
+  editPerson,
+  getPersonById,
+} from "../api/People";
 import icons from "../assets/icons/icons";
+import DialogFormContext from "../component/Dialog/DialogFormContext";
+import DialogPeople from "../component/Dialog/DialogPeople";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
-import { peopleTabData } from "../model/MockData/AboutData";
+import {
+  addPeopleTabData,
+  deletePeopleTabData,
+  peopleTabData,
+  peopleTabType,
+  updatePeopleTabData,
+} from "../model/MockData/AboutData";
 
 const AboutPeople: React.FC = () => {
   const [content, setContent] = useState(peopleTabData);
 
   const navigator = useNavigate();
 
-  const columnDefPeople: ColumnDef<typeof content>[] = [
+  const columnDefPeople: ColumnDef<peopleTabType>[] = [
     {
       header: "Name",
       accessorKey: "name",
@@ -34,10 +50,10 @@ const AboutPeople: React.FC = () => {
       size: 80,
       cell: (info) => (
         <div className="flex justify-center gap-2 h-24">
-          <button>
+          <button onClick={(e) => editPeopleHandler(info.row.original)}>
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
-          <button>
+          <button onClick={(e) => deletePeopleHandler(info.row.original)}>
             <img src={icons.delete.blue} className="h-6 w-6" />
           </button>
         </div>
@@ -45,9 +61,61 @@ const AboutPeople: React.FC = () => {
     },
   ];
 
+  const dialog = useContext(DialogFormContext);
+
+  const addPeopleHandler = () => {
+    const inputElement = (
+      <DialogPeople
+        data={createBlankPerson()}
+        title="Create New People"
+        onSubmit={(data) => {
+          addPeopleTabData(createPerson(data));
+          setContent([...peopleTabData]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
+  const editPeopleHandler = (data: peopleTabType) => {
+    const person = getPersonById(data.id);
+    if (!person) return;
+
+    const inputElement = (
+      <DialogPeople
+        data={person}
+        title="Edit People"
+        onSubmit={(data) => {
+          editPerson(data.id, data);
+          updatePeopleTabData(data);
+          setContent([...peopleTabData]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
+  const deletePeopleHandler = (data: peopleTabType) => {
+    const inputElement = (
+      <DialogValidation
+        title="Delete People"
+        message="Are you sure you want to delete this people?"
+        onConfirm={() => {
+          deletePerson(data.id);
+          deletePeopleTabData(data.id);
+          setContent([...peopleTabData]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
   return (
     <>
-      <Section title="Partner" type="add" isLast>
+      <Section title="Partner" type="add" onClick={addPeopleHandler} isLast>
         <TableBase data={content} columns={columnDefPeople}></TableBase>
       </Section>
     </>

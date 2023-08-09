@@ -22,7 +22,7 @@ const createRandomPartners = (count: number) => {
     obj.push({
       id: faker.string.uuid(),
       name: faker.company.name(),
-      status: faker.number.int({ min: 0, max: 4 }),
+      status: faker.number.int({ min: 0, max: 1 }),
       logo: {
         type: "image",
         src: faker.image.dataUri({
@@ -47,9 +47,22 @@ export const getPartner = () => {
   });
 };
 
+export const getPartnerById = (id: string) => {
+  return randomPartners.find((item) => item.id === id);
+};
+
+export const updatePartner = (item: partnerType) => {
+  const partner = randomPartners.find((item) => item.id === item.id);
+  if (partner) {
+    partner.name = item.name;
+    partner.status = item.status;
+    partner.logo = item.logo;
+  }
+};
+
 export const createPartner = (item: partnerType) => {
   item.id = faker.string.uuid();
-  randomPartners.push(item);
+  randomPartners.unshift(item);
 };
 
 export const deletePartner = (id: string) => {
@@ -66,4 +79,16 @@ export const editPartner = (id: string, item: partnerType) => {
     partner.status = item.status;
     partner.logo = item.logo;
   }
+};
+
+export const getBlankPartner = (): partnerType => {
+  return {
+    id: "",
+    name: "",
+    status: partnerStatus.on,
+    logo: {
+      type: "image",
+      src: "",
+    },
+  };
 };

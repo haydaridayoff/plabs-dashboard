@@ -649,7 +649,12 @@ const Home = () => {
   };
 
   const clientTable = (
-    <Section title={"Select Client"} onClick={addClientHandler} type="add">
+    <Section
+      title={"Select Client"}
+      onClick={addClientHandler}
+      type="add"
+      isLast
+    >
       <TableBase data={content.clients} columns={clientColumns} />
     </Section>
   );

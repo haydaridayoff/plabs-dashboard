@@ -1,8 +1,7 @@
 import { faker } from "@faker-js/faker";
-import { getEcosystems } from "../../api/Ecosystem";
-import { getPartner } from "../../api/Partner";
-import { getPeople } from "../../api/People";
-import images from "../../assets/images/images";
+import { ecosystemType, getEcosystems } from "../../api/Ecosystem";
+import { getPartner, partnerType } from "../../api/Partner";
+import { getPeople, personType } from "../../api/People";
 
 export type aboutTabType = {
   about: {
@@ -111,3 +110,94 @@ export const aboutTabData: aboutTabType = {
 export const ecosystemTabData: ecosystemTabType[] = makeDummyEcosystem();
 export const partnerTabData: partnerTabType[] = makeDummyPartner();
 export const peopleTabData: peopleTabType[] = makeDummyPeople();
+
+const convertToEcosystemTab = (item: ecosystemType) => {
+  const tabItem: ecosystemTabType = {
+    id: item.id,
+    name: item.name,
+    image: item.file.src,
+  };
+  return tabItem;
+};
+
+const convertToPartnerTab = (item: partnerType) => {
+  const tabItem: partnerTabType = {
+    id: item.id,
+    name: item.name,
+    image: item.logo.src,
+  };
+  return tabItem;
+};
+
+const convertToPeopleTab = (item: personType) => {
+  const tabItem: peopleTabType = {
+    id: item.id,
+    name: item.name,
+    occupation: item.occupation,
+    image: item.photo.src,
+  };
+  return tabItem;
+};
+
+export const addEcosystemTabData = (item: ecosystemType) => {
+  const tabItem: ecosystemTabType = {
+    id: item.id,
+    name: item.name,
+    image: item.file.src,
+  };
+  ecosystemTabData.unshift(tabItem);
+};
+
+export const addPartnerTabData = (item: partnerType) => {
+  const tabItem: partnerTabType = {
+    id: item.id,
+    name: item.name,
+    image: item.logo.src,
+  };
+
+  partnerTabData.unshift(tabItem);
+};
+
+export const addPeopleTabData = (item: personType) => {
+  const tabItem: peopleTabType = {
+    id: item.id,
+    name: item.name,
+    occupation: item.occupation,
+    image: item.photo.src,
+  };
+
+  peopleTabData.unshift(tabItem);
+};
+
+export const updateEcosystemTabData = (item: ecosystemType) => {
+  const tabItem = convertToEcosystemTab(item);
+  const index = ecosystemTabData.findIndex((data) => data.id === tabItem.id);
+  ecosystemTabData[index] = tabItem;
+};
+
+export const updatePartnerTabData = (item: partnerType) => {
+  const tabItem = convertToPartnerTab(item);
+  const index = partnerTabData.findIndex((data) => data.id === tabItem.id);
+  partnerTabData[index] = tabItem;
+};
+
+export const updatePeopleTabData = (item: personType) => {
+  const tabItem = convertToPeopleTab(item);
+  const index = peopleTabData.findIndex((data) => data.id === tabItem.id);
+  peopleTabData[index] = tabItem;
+};
+
+export const deleteEcosystemTabData = (id: string) => {
+  const index = ecosystemTabData.findIndex((data) => data.id === id);
+  ecosystemTabData.splice(index, 1);
+};
+
+export const deletePartnerTabData = (id: string) => {
+  const index = partnerTabData.findIndex((data) => data.id === id);
+  partnerTabData.splice(index, 1);
+};
+
+export const deletePeopleTabData = (id: string) => {
+  const index = peopleTabData.findIndex((data) => data.id === id);
+  peopleTabData.splice(index, 1);
+};

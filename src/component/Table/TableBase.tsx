@@ -76,75 +76,78 @@ const TableBase: FC<Props> = (props) => {
           setFilter={tableInstance.setGlobalFilter}
         />
       </div>
-      <table className="flex-grow-0">
-        <thead className="flex-none">
-          {getHeaderGroups().map((headerGroup) => (
-            <tr
-              key={headerGroup.id}
-              className="pt-6 h-14 bg-[#eeeeee] font-jakarta font-bold text-left text-[#00000080]"
-            >
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="px-3"
-                  {...{
-                    style: {
-                      width: header.column.columnDef.size,
-                      maxWidth: header.column.columnDef.maxSize,
-                      minWidth: header.column.columnDef.minSize,
-                    },
-                  }}
-                >
-                  {header.isPlaceholder ? null : (
-                    <div
-                      className="cursor-pointer select-none"
-                      onClick={header.column.getToggleSortingHandler()}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                      {{
-                        asc: "🔼",
-                        desc: "🔽",
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </div>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody className="min-h-[4px] max-h-[4px] h-1">
-          {getRowModel().rows.map((row) => (
-            //get last row in every page have to have bottom border
-            <tr
-              key={row.id}
-              className={`min-h-[4px] max-h-[4px] h-1 pt-6 flex-grow-0 font-jakarta text-left border-[#D9D9D9] border-t-2 ${
-                (row.index + 1) % tableInstance.getRowModel().rows.length === 0
-                  ? "border-b-2"
-                  : ""
-              }`}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="px-3 min-h-[4px] max-h-[4px] h-1"
-                  {...{
-                    style: {
-                      width: cell.column.columnDef.size,
-                      maxWidth: cell.column.columnDef.maxSize,
-                      minWidth: cell.column.columnDef.minSize,
-                    },
-                  }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto w-full">
+        <table className="w-full">
+          <thead className="flex-none">
+            {getHeaderGroups().map((headerGroup) => (
+              <tr
+                key={headerGroup.id}
+                className="pt-6 h-14 bg-[#eeeeee] font-jakarta font-bold text-left text-[#00000080]"
+              >
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className="px-3"
+                    {...{
+                      style: {
+                        width: header.column.columnDef.size,
+                        maxWidth: header.column.columnDef.maxSize,
+                        minWidth: header.column.columnDef.minSize,
+                      },
+                    }}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <div
+                        className="cursor-pointer select-none"
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                        {{
+                          asc: "🔼",
+                          desc: "🔽",
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </div>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody className="min-h-[4px] max-h-[4px] h-1">
+            {getRowModel().rows.map((row) => (
+              //get last row in every page have to have bottom border
+              <tr
+                key={row.id}
+                className={`min-h-[4px] max-h-[4px] h-1 pt-6 flex-grow-0 font-jakarta text-left border-[#D9D9D9] border-t-2 ${
+                  (row.index + 1) % tableInstance.getRowModel().rows.length ===
+                  0
+                    ? "border-b-2"
+                    : ""
+                }`}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="px-3 min-h-[4px] max-h-[4px] h-1"
+                    {...{
+                      style: {
+                        width: cell.column.columnDef.size,
+                        maxWidth: cell.column.columnDef.maxSize,
+                        minWidth: cell.column.columnDef.minSize,
+                      },
+                    }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <BottomPagination
         TotalPage={tableInstance.getPageCount()}
         currentPage={tableInstance.getState().pagination.pageIndex + 1}

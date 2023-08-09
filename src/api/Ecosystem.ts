@@ -10,7 +10,19 @@ export type ecosystemType = {
   };
 };
 
-enum ecosystemStatus {
+export const getBlankEcosystem = (): ecosystemType => {
+  return {
+    id: "",
+    name: "",
+    status: 0,
+    file: {
+      type: "",
+      src: "",
+    },
+  };
+};
+
+export enum ecosystemStatus {
   active,
   inactive,
   pending,
@@ -23,7 +35,7 @@ const createRandomEcosystems = (count: number) => {
   for (let i = 0; i < count; i++) {
     obj.push({
       id: faker.string.uuid(),
-      name: faker.database.engine(),
+      name: faker.lorem.slug(),
       status: faker.number.int({ min: 0, max: 4 }) as ecosystemStatus,
       file: {
         type: "image",
@@ -62,7 +74,7 @@ export const getEcosystemById = (id: string) => {
 
 export const createEcosystem = (item: ecosystemType) => {
   item.id = faker.string.uuid();
-  randomEcosystem.push(item);
+  randomEcosystem.unshift(item);
 };
 
 export const updateEcosystem = (item: ecosystemType) => {

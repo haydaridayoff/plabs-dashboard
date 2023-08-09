@@ -1,10 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { isTemplateLiteralTypeSpan } from "typescript";
-import { getProjects, projectType } from "../api/Project";
+import { deleteProject, getProjects, projectType } from "../api/Project";
 import { getService } from "../api/Service";
 import icons from "../assets/icons/icons";
+import DialogFormContext from "../component/Dialog/DialogFormContext";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
 
@@ -43,10 +45,14 @@ const ProjectDashboard: React.FC = () => {
       size: 80,
       cell: (info) => (
         <div className="flex justify-center gap-2 h-24">
-          <button>
+          <button
+            onClick={(e) => {
+              editProject(info.row.original);
+            }}
+          >
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
-          <button>
+          <button onClick={(e) => deleteProjectHandler(info.row.original)}>
             <img src={icons.delete.blue} className="h-6 w-6" />
           </button>
         </div>
@@ -54,13 +60,33 @@ const ProjectDashboard: React.FC = () => {
     },
   ];
 
+  const editProject = (project: projectType) => {
+    navigator(`/project/${project.id}`);
+  };
+
+  const dialog = useContext(DialogFormContext);
+
+  const deleteProjectHandler = (project: projectType) => {
+    const inputElement = (
+      <DialogValidation
+        title="Delete Project"
+        message="Are you sure you want to delete this project?"
+        onConfirm={() => {
+          deleteProject(project.id);
+          setContent([...getProjects().map((item) => item.value)]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
   return (
     <>
       <Section
         title="Project"
         type="add"
         onClick={() => {
-          //navigate back to root
           navigator("/project/create", { state: { fromDashboard: true } });
         }}
         isLast

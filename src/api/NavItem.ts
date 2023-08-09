@@ -1,4 +1,3 @@
-import { get } from "http";
 import sidebarNavItems, { navItem } from "../model/Sidebar/SidebarNavItems";
 
 export const getNavItems = async () => {

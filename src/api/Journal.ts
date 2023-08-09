@@ -72,5 +72,5 @@ export const deleteJournal = (id: string) => {
 
 export const createJournal = (data: journalType) => {
   data.id = faker.string.uuid();
-  randomJournals.push(data);
+  randomJournals.unshift(data);
 };

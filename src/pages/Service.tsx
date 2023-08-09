@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useState } from "react";
-import { isTemplateLiteralTypeSpan } from "typescript";
 import {
   createService,
+  deleteService,
   getServices,
   serviceType,
   updateService,
@@ -14,8 +14,8 @@ import DialogFormContext from "../component/Dialog/DialogFormContext";
 import DialogService, {
   getBlankService,
 } from "../component/Dialog/DialogService";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
-import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import TableBase from "../component/Table/TableBase";
 
 const Service: React.FC = () => {
@@ -55,7 +55,7 @@ const Service: React.FC = () => {
           <button onClick={(e) => editService(info.row.original)}>
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
-          <button>
+          <button onClick={(e) => deleteServiceHandler(info.row.original)}>
             <img src={icons.delete.blue} className="h-6 w-6" />
           </button>
         </div>
@@ -89,6 +89,21 @@ const Service: React.FC = () => {
           setContent([...getServices().map((item) => item.value)]);
         }}
         data={getBlankService()}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
+  const deleteServiceHandler = (data: serviceType) => {
+    const inputElement = (
+      <DialogValidation
+        title="Delete Service"
+        message="Are you sure you want to delete this service?"
+        onConfirm={() => {
+          deleteService(data.id);
+          setContent([...getServices().map((item) => item.value)]);
+        }}
       />
     );
 

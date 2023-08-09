@@ -63,7 +63,7 @@ export const getClient = (id: string) => {
 
 export const createClient = (item: clientsType) => {
   item.id = faker.string.uuid();
-  randomClients.push(item);
+  randomClients.unshift(item);
 };
 
 export const deleteClient = (id: string) => {

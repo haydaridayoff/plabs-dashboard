@@ -67,7 +67,7 @@ export const pushProject = (item: projectType) => {
 
 export const createProject = (item: projectType) => {
   item.id = faker.string.uuid();
-  randomProjects.push(item);
+  randomProjects.unshift(item);
 };
 
 export const deleteProject = (id: string) => {

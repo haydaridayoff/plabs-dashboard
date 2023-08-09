@@ -79,5 +79,5 @@ export const deleteJob = (id: string) => {
 
 export const createJob = (job: jobType) => {
   job.id = faker.string.uuid();
-  randomJobs.push(job);
+  randomJobs.unshift(job);
 };

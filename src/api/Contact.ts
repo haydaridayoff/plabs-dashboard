@@ -48,7 +48,7 @@ export const getContactById = (id: string) => {
 
 export const createContact = (item: contactType) => {
   item.id = faker.string.uuid();
-  randomContact.push(item);
+  randomContact.unshift(item);
 };
 
 export const updateContact = (item: contactType) => {

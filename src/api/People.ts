@@ -15,6 +15,23 @@ export type personType = {
   LinkedInUrl: string;
 };
 
+export const createBlankPerson = (): personType => {
+  return {
+    id: "",
+    name: "",
+    occupation: "",
+    photo: {
+      type: "image",
+      src: "",
+    },
+    photoHover: {
+      type: "image",
+      src: "",
+    },
+    LinkedInUrl: "",
+  };
+};
+
 const createRandomPeople = (count: number) => {
   const obj: personType[] = [];
   for (let i = 0; i < count; i++) {
@@ -57,7 +74,12 @@ export const getPeople = () => {
 
 export const createPerson = (item: personType) => {
   item.id = faker.string.uuid();
-  randomPeople.push(item);
+  randomPeople.unshift(item);
+  return item;
+};
+
+export const getPersonById = (id: string) => {
+  return randomPeople.find((item) => item.id === id);
 };
 
 export const deletePerson = (id: string) => {
