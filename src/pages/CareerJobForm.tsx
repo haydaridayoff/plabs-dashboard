@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   createJob,
   editJob,
+  getBlankJob,
+  getJob,
   getJobs,
   status as jobStatus,
   jobType,
@@ -16,25 +18,16 @@ const CareerJobForm: React.FC = () => {
   //get params from url
   const { id } = useParams();
   const navigate = useNavigate();
+  console.log(id);
+  const [content, setContent] = useState<jobType>(
+    id ? (getJob(id) ? getJob(id)! : getBlankJob()) : getBlankJob(),
+  );
 
-  const [content, setContent] = useState<jobType>({
-    id: "",
-    title: "",
-    estimateSalary: "",
-    image: "",
-    location: "",
-    message: "",
-    publishDate: new Date(),
-    slug: "",
-    status: jobStatus.off,
-    type: "",
-  });
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (id) {
-      const job = getJobs().find((item) => item.value.id === id);
+      const job = getJob(id);
       if (job) {
-        setContent(job.value);
+        setContent({ ...job });
       }
     }
   }, [id]);
@@ -48,8 +41,8 @@ const CareerJobForm: React.FC = () => {
       createJob(content);
     }
     navigate(-1);
-    console.log(content);
   };
+
   return (
     <>
       <Section title="Job" isLast={true} type="add">
@@ -167,6 +160,10 @@ const CareerJobForm: React.FC = () => {
                   { label: "Off", value: jobStatus.off },
                 ]}
                 label="Status"
+                defaultValue={{
+                  label: jobStatus[content.status],
+                  value: content.status,
+                }}
                 onChange={(option) => {
                   setContent({
                     ...content,
@@ -188,4 +185,5 @@ const CareerJobForm: React.FC = () => {
     </>
   );
 };
+
 export default CareerJobForm;

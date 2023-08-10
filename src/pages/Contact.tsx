@@ -1,13 +1,25 @@
 import { ColumnDef } from "@tanstack/react-table";
-import React from "react";
-import { contactType, getContact } from "../api/Contact";
+import React, { useContext, useState } from "react";
+import {
+  contactType,
+  createContact,
+  deleteContact,
+  getContact,
+  updateContact,
+} from "../api/Contact";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
+import DialogContact from "../component/Dialog/DialogContact";
+import DialogFormContext from "../component/Dialog/DialogFormContext";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
 
 const Contact: React.FC = () => {
+  const [content, setContent] = useState<contactType[]>(
+    getContact().map((contact) => contact.value),
+  );
   const contactColumnDefs: ColumnDef<contactType>[] = [
     {
       header: "Date",
@@ -54,12 +66,12 @@ const Contact: React.FC = () => {
     {
       header: "Action",
       size: 80,
-      cell: () => (
+      cell: (info) => (
         <div className="flex justify-center gap-2 h-24">
-          <button>
+          <button onClick={(e) => editContactHandler(info.row.original)}>
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
-          <button>
+          <button onClick={(e) => deleteContactHandler(info.row.original)}>
             <img src={icons.delete.blue} className="h-6 w-6" />
           </button>
         </div>
@@ -67,15 +79,43 @@ const Contact: React.FC = () => {
     },
   ];
 
+  const dialog = useContext(DialogFormContext);
+
+  const editContactHandler = (data: contactType) => {
+    const inputElement = (
+      <DialogContact
+        data={data}
+        title="Edit Contact"
+        onSubmit={(data) => {
+          updateContact(data);
+          setContent(getContact().map((contact) => contact.value));
+        }}
+      />
+    );
+    dialog.openDialog(inputElement);
+  };
+
+  const deleteContactHandler = (data: contactType) => {
+    const inputElement = (
+      <DialogValidation
+        title="Delete Contact"
+        message="Are you sure want to delete this contact?"
+        onConfirm={() => {
+          deleteContact(data.id);
+          setContent(getContact().map((contact) => contact.value));
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
   return (
     <>
       <Content>
         <Card>
-          <Section title="Contact" type="add" isLast>
-            <TableBase
-              columns={contactColumnDefs}
-              data={getContact().map((item) => item.value)}
-            />
+          <Section title="Contact" type="None" isLast>
+            <TableBase columns={contactColumnDefs} data={content} />
           </Section>
         </Card>
       </Content>

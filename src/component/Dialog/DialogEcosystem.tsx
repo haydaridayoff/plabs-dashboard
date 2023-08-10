@@ -11,7 +11,7 @@ import DialogBase from "./Base/DialogBase";
 import DialogFormInput from "./Input/DialogFormInput";
 
 type Props = {
-  data: ecosystemType;
+  data?: ecosystemType;
   title: string;
   closeDialog?: () => void;
   onSubmit: (data: ecosystemType) => void;
@@ -78,7 +78,7 @@ const DialogEcosystem: React.FC<Props> = (props) => {
               options={status}
               selectStyle="w-full"
               defaultValue={
-                props.data.status
+                props.data?.status !== undefined
                   ? {
                       label: ecosystemStatus[props.data.status],
                       value: props.data.status,

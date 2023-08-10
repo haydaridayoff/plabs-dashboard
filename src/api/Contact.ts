@@ -10,6 +10,16 @@ export type contactType = {
 
 export const contactCount = 100;
 
+export const getBlankContact = (): contactType => {
+  return {
+    id: "",
+    date: new Date(),
+    name: "",
+    email: "",
+    message: "",
+  };
+};
+
 const createRandomContact = (count: number) => {
   const obj: contactType[] = [];
   for (let i = 0; i < count; i++) {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SingleValue } from "react-select";
-import { clientStatus, clientsType } from "../../api/Clients";
+import { clientStatus, clientsType, getBlankClient } from "../../api/Clients";
 import FileInput from "../Input/FileInput";
 import InputField from "../Input/InputField";
 import SelectInput from "../Input/SelectInput";
@@ -11,13 +11,13 @@ type Props = {
   title: string;
   closeDialog?: () => void;
   onSubmit: (data: clientsType) => void;
-  userInput: {
+  userInput?: {
     data?: clientsType;
-    onChangeName: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onChangeStatus: (
+    onChangeName?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChangeStatus?: (
       option: SingleValue<{ label: string; value: any }>,
     ) => void;
-    onChangeLogo: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChangeLogo?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   };
 };
 
@@ -30,7 +30,12 @@ const status = [
 ];
 
 const isDataFilled = (data: clientsType) => {
-  if (data && data.name !== "" && data.status !== undefined) {
+  if (
+    data &&
+    data.name !== "" &&
+    data.status !== undefined &&
+    data.file.src !== ""
+  ) {
     return false;
   }
   return true;
@@ -38,10 +43,10 @@ const isDataFilled = (data: clientsType) => {
 
 const DialogClient: React.FC<Props> = (props) => {
   const [content, setContent] = useState<clientsType>(
-    props.userInput.data ? props.userInput.data : ({} as clientsType),
+    props.userInput?.data ? props.userInput.data : getBlankClient(),
   );
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(
-    !isDataFilled(content),
+    isDataFilled(content),
   );
 
   return (
@@ -59,9 +64,10 @@ const DialogClient: React.FC<Props> = (props) => {
             <InputField
               label="Client Name"
               type="text"
-              defaultValue={props.userInput.data?.name}
+              defaultValue={props.userInput?.data?.name}
               onChange={(e) => {
-                props.userInput.onChangeName(e);
+                props.userInput?.onChangeName &&
+                  props.userInput?.onChangeName(e);
                 content.name = e.target.value;
                 setContent({ ...content });
                 setIsSubmitDisabled(isDataFilled(content));
@@ -73,7 +79,7 @@ const DialogClient: React.FC<Props> = (props) => {
               label="Status"
               options={status}
               defaultValue={
-                props.userInput.data
+                props.userInput?.data
                   ? {
                       label: clientStatus[props.userInput.data.status],
                       value: props.userInput.data.status,
@@ -81,7 +87,8 @@ const DialogClient: React.FC<Props> = (props) => {
                   : undefined
               }
               onChange={(option) => {
-                props.userInput.onChangeStatus(option);
+                props.userInput?.onChangeStatus &&
+                  props.userInput?.onChangeStatus(option);
                 content.status = option?.value;
                 setContent({ ...content });
                 setIsSubmitDisabled(isDataFilled(content));
@@ -94,7 +101,8 @@ const DialogClient: React.FC<Props> = (props) => {
               fileType="image"
               readOnly={false}
               onFileChange={(e) => {
-                props.userInput.onChangeLogo(e);
+                props.userInput?.onChangeLogo &&
+                  props.userInput?.onChangeLogo(e);
                 content.file.type = "image";
                 content.file.src = URL.createObjectURL(e.target.files![0]);
                 setContent({ ...content });

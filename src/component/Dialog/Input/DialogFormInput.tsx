@@ -15,7 +15,6 @@ const DialogFormInput: React.FC<Props> = (props) => {
   const dialog = useContext(DialogFormContext);
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("submitHandler");
     onSubmit(event);
     dialog.closeDialog();
   };

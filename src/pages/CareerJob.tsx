@@ -1,6 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { getJobs, status as jobStatus, jobType } from "../api/Job";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { deleteJob, getJobs, status as jobStatus, jobType } from "../api/Job";
 import icons from "../assets/icons/icons";
+import DialogFormContext from "../component/Dialog/DialogFormContext";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
 
@@ -83,12 +87,12 @@ const CareerJob: React.FC = () => {
     {
       header: "Action",
       size: 80,
-      cell: () => (
+      cell: (info) => (
         <div className="flex justify-center gap-2 h-24">
-          <button>
+          <button onClick={(e) => editJobHandler(info.row.original.id)}>
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
-          <button>
+          <button onClick={(e) => deleteJobHandler(info.row.original.id)}>
             <img src={icons.delete.blue} className="h-6 w-6" />
           </button>
         </div>
@@ -96,13 +100,40 @@ const CareerJob: React.FC = () => {
     },
   ];
 
+  const navigate = useNavigate();
+  const dialog = useContext(DialogFormContext);
+
+  const addJobHandler = () => {
+    navigate("/career/job/create");
+  };
+
+  const editJobHandler = (id: string) => {
+    navigate(`/career/job/${id}`);
+  };
+
+  const deleteJobHandler = (id: string) => {
+    const inputElement = (
+      <DialogValidation
+        title="Delete Job"
+        message="Are you sure want to delete this job?"
+        onConfirm={() => {
+          deleteJob(id);
+          setContent([...getJobs().map((item) => item.value)]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
+  const [content, setContent] = useState<jobType[]>(
+    getJobs().map((item) => item.value),
+  );
+
   return (
     <>
-      <Section title="Job" type="add" isLast>
-        <TableBase
-          data={getJobs().map((item) => item.value)}
-          columns={jobColumnDefs}
-        ></TableBase>
+      <Section title="Job" type="add" onClick={addJobHandler} isLast>
+        <TableBase data={content} columns={jobColumnDefs}></TableBase>
       </Section>
     </>
   );

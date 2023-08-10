@@ -1,11 +1,25 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { applicantType, getApplicants } from "../api/Applicant";
+import { useContext, useState } from "react";
+import {
+  applicantType,
+  createApplicant,
+  deleteApplicant,
+  getApplicants,
+  getBlankApplicant,
+  updateApplicant,
+} from "../api/Applicant";
 import { jobType } from "../api/Job";
 import icons from "../assets/icons/icons";
+import DialogApplicant from "../component/Dialog/DialogApplicant";
+import DialogFormContext from "../component/Dialog/DialogFormContext";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
 
 const CareerAplicant: React.FC = () => {
+  const [content, setContent] = useState<applicantType[]>(
+    getApplicants().map((applicant) => applicant.value),
+  );
   const applicantColumnDefs: ColumnDef<applicantType>[] = [
     {
       header: "Date",
@@ -130,12 +144,12 @@ const CareerAplicant: React.FC = () => {
     {
       header: "Action",
       size: 80,
-      cell: () => (
+      cell: (info) => (
         <div className="flex justify-center gap-2 h-24">
-          <button>
+          <button onClick={(e) => editApplicantHandler(info.row.original)}>
             <img src={icons.edit.blue} className="h-6 w-6" />
           </button>
-          <button>
+          <button onClick={(e) => deleteApplicantHandler(info.row.original)}>
             <img src={icons.delete.blue} className="h-6 w-6" />
           </button>
         </div>
@@ -143,13 +157,62 @@ const CareerAplicant: React.FC = () => {
     },
   ];
 
+  const dialog = useContext(DialogFormContext);
+
+  const addApplicantHandler = () => {
+    const inputElement = (
+      <DialogApplicant
+        data={getBlankApplicant()}
+        title="Create New Applicant"
+        onSubmit={(data) => {
+          createApplicant(data);
+          setContent([...getApplicants().map((applicant) => applicant.value)]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
+  const editApplicantHandler = (data: applicantType) => {
+    const inputElement = (
+      <DialogApplicant
+        data={data}
+        title="Edit Applicant"
+        onSubmit={(data) => {
+          updateApplicant(data);
+          setContent([...getApplicants().map((applicant) => applicant.value)]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
+  const deleteApplicantHandler = (data: applicantType) => {
+    const inputElement = (
+      <DialogValidation
+        title="Delete Applicant"
+        message="Are you sure want to delete this applicant?"
+        onConfirm={() => {
+          deleteApplicant(data.id);
+          setContent([...getApplicants().map((applicant) => applicant.value)]);
+        }}
+      />
+    );
+
+    dialog.openDialog(inputElement);
+  };
+
   return (
     <>
-      <Section title="Job" type="add" isLast>
-        <TableBase
-          data={getApplicants().map((item) => item.value)}
-          columns={applicantColumnDefs}
-        ></TableBase>
+      <Section
+        title="Applicant"
+        type="add"
+        onClick={addApplicantHandler}
+        isLast
+      >
+        <TableBase data={content} columns={applicantColumnDefs}></TableBase>
       </Section>
     </>
   );

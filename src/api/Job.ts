@@ -18,6 +18,21 @@ export type jobType = {
   status: status;
 };
 
+export const getBlankJob = (): jobType => {
+  return {
+    id: "",
+    title: "",
+    estimateSalary: "",
+    image: "",
+    location: "",
+    message: "",
+    publishDate: new Date(),
+    slug: "",
+    status: status.off,
+    type: "",
+  };
+};
+
 // insert comma to indonesian currency format
 // input example
 // example: Rp1000000 => Rp1,000,000

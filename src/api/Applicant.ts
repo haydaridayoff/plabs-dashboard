@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { getJobs, jobType } from "./Job";
+import { getBlankJob, getJobs, jobType } from "./Job";
 
 export type applicantType = {
   id: string;
@@ -20,6 +20,23 @@ export enum applicantStatus {
   on,
   off,
 }
+
+export const getBlankApplicant = (): applicantType => {
+  return {
+    id: "",
+    name: "",
+    birthDate: new Date(),
+    applyDate: new Date(),
+    email: "",
+    phone: "",
+    address: "",
+    cvLink: "",
+    linkedinUrl: "",
+    portofolioUrl: "",
+    job: getBlankJob(),
+    status: applicantStatus.off,
+  };
+};
 
 export const makeDummyApplicants = (count: number) => {
   const obj: applicantType[] = [];

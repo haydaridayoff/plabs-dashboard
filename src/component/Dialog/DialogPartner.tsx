@@ -7,7 +7,7 @@ import DialogBase from "./Base/DialogBase";
 import DialogFormInput from "./Input/DialogFormInput";
 
 type Props = {
-  data: partnerType;
+  data?: partnerType;
   title: string;
   closeDialog?: () => void;
   onSubmit: (data: partnerType) => void;
@@ -62,7 +62,7 @@ const DialogPartner: React.FC<Props> = (props) => {
               options={status}
               selectStyle="w-full"
               defaultValue={
-                props.data.status !== undefined
+                props.data?.status !== undefined
                   ? {
                       label: partnerStatus[props.data.status],
                       value: props.data.status,

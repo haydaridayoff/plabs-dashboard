@@ -18,6 +18,18 @@ export type clientsType = {
   };
 };
 
+export const getBlankClient = (): clientsType => {
+  return {
+    id: "",
+    name: "",
+    status: clientStatus.active,
+    file: {
+      type: "image",
+      src: "",
+    },
+  };
+};
+
 const createRandomClients = (count: number) => {
   const obj: clientsType[] = [];
   for (let i = 0; i < count; i++) {
