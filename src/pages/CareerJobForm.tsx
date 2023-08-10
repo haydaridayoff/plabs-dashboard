@@ -96,7 +96,7 @@ const CareerJobForm: React.FC = () => {
                     type: e.target.value,
                   });
                 }}
-                defaultValue={content.estimateSalary}
+                defaultValue={content.type}
               />
             </div>
           </div>
