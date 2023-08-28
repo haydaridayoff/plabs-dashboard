@@ -1,5 +1,12 @@
 import React, { FC, useContext, useState } from "react";
+import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import icons from "../../assets/icons/icons";
+import handleLogout from "../../handlers/logoutHandler";
+import { clearAccessToken } from "../../utils/tokenManager";
+import DialogFormContext from "../Dialog/DialogFormContext";
+import DialogValidation from "../Dialog/DialogValidation";
+import PageLoader from "../Loader/PageLoader";
 import sidebarContext from "./sidebar-context";
 import SidebarLogo from "./SidebarLogo";
 import SidebarNav from "./SidebarNav";
@@ -10,6 +17,8 @@ interface Props {
 
 const Sidebar: FC<Props> = (props) => {
   const sidebar = useContext(sidebarContext);
+  const [isShow, setIsShow] = useState(false);
+
   let sidebarStyle =
     "fixed flex flex-col items-center w-[230px] left-0 top-0 bottom-0 shadow z-10 transition-all duration-300 ease-in-out bg-white overflow-hidden font-jakarta";
   let buttonStyle =
@@ -25,12 +34,21 @@ const Sidebar: FC<Props> = (props) => {
     sidebar.setOnMouseLeave();
   };
 
-  const logoutHandler = (
+  const dialog = useContext(DialogFormContext);
+  const navigate = useNavigate();
+  const logoutHandler = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-    localStorage.removeItem("token");
-    window.location.href = "/login";
+    setIsShow(true);
+    try {
+      await handleLogout();
+      navigate("/login");
+    } catch (errorDetails) {
+      clearAccessToken();
+      navigate("/login");
+    }
+    setIsShow(false);
   };
 
   return (
@@ -49,6 +67,7 @@ const Sidebar: FC<Props> = (props) => {
           alt="Logout"
         />
       </button>
+      {createPortal(PageLoader({ isShow }), document.body)}
     </div>
   );
 };

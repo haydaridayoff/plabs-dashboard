@@ -1,15 +1,19 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Navigate, Outlet, redirect, useNavigate } from "react-router-dom";
 import DialogFormContext, {
   DialogFormContextProvider,
 } from "../component/Dialog/DialogFormContext";
 import { SidebarContextProvider } from "../component/Sidebar/sidebar-context";
 import Topbar from "../component/Topbar/Topbar";
+import { getAccessToken } from "../utils/tokenManager";
 
 const Journal = () => {
-  if (localStorage.getItem("token") === null) {
-    return <Navigate to="/login" />;
-  }
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!getAccessToken()) {
+      navigate("/login");
+    }
+  }, [getAccessToken()]);
 
   return (
     <>

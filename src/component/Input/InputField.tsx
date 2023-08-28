@@ -72,11 +72,6 @@ const InputField: React.FC<Props> = (props) => {
             : {}
         }
       >
-        {props.type === "password" && isVisible && (
-          <button onClick={togglePasswordVisible} className="mr-1">
-            <img src={isFocus ? icons.eye.on.black : icons.eye.on.gray} />
-          </button>
-        )}
         <input
           id={props.id}
           ref={inputRef}
@@ -101,6 +96,11 @@ const InputField: React.FC<Props> = (props) => {
         {props.type === "password" && !isVisible && (
           <button onClick={togglePasswordVisible}>
             <img src={isFocus ? icons.eye.off.black : icons.eye.off.gray} />
+          </button>
+        )}
+        {props.type === "password" && isVisible && (
+          <button onClick={togglePasswordVisible}>
+            <img src={isFocus ? icons.eye.on.black : icons.eye.on.gray} />
           </button>
         )}
       </div>

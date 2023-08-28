@@ -13,6 +13,7 @@ import EcosystemPartner from "./pages/EcosystemPartner";
 import Home from "./pages/Home";
 import Journal from "./pages/Journal";
 import JournalDashboard from "./pages/JournalDashboard";
+import JournalForm from "./pages/JournalForm";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import ProjectCreate from "./pages/ProjectCreate";
@@ -122,11 +123,11 @@ const router = createBrowserRouter([
           },
           {
             path: ":id",
-            element: <p>Journal Detail</p>,
+            element: <JournalForm />,
           },
           {
             path: "create",
-            element: <p>Journal Create</p>,
+            element: <JournalForm />,
           },
         ],
       },

@@ -18,9 +18,7 @@ const TopbarNavItem: React.FC<Props> = (props) => {
           sidebar.navActiveItems.current.length - 1;
         return (
           <Fragment key={`${item.id}-fragment`}>
-            <NavLink key={item.id} to={item.path}>
-              {item.title}
-            </NavLink>
+            <h2 key={item.id}>{item.title}</h2>
             {!isLastItem && (
               <img
                 src={icons.navSeparator.gray}

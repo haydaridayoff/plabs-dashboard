@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   contactType,
   createContact,
@@ -8,18 +9,45 @@ import {
   updateContact,
 } from "../api/Contact";
 import icons from "../assets/icons/icons";
+import { getAllContactsHandler } from "../backendApi/model/ContactHandler";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
 import DialogContact from "../component/Dialog/DialogContact";
 import DialogFormContext from "../component/Dialog/DialogFormContext";
 import DialogValidation from "../component/Dialog/DialogValidation";
+import PageLoader from "../component/Loader/PageLoader";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
+import { handleGetAllContact } from "../handlers/contactHandler";
 
 const Contact: React.FC = () => {
-  const [content, setContent] = useState<contactType[]>(
-    getContact().map((contact) => contact.value),
-  );
+  const [content, setContent] = useState<contactType[]>([]);
+  const [isShowPageLoader, setIsShowPageLoader] = useState(false);
+
+  useEffect(() => {
+    getAllContacts();
+  }, []);
+
+  const getAllContacts = async () => {
+    setIsShowPageLoader(true);
+    try {
+      const response = await handleGetAllContact();
+      const contacts: contactType[] = response.data.map((contact) => {
+        return {
+          id: contact.guid,
+          name: contact.name,
+          date: new Date(contact.date),
+          email: contact.email,
+          message: contact.message,
+        };
+      });
+      setContent(contacts);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsShowPageLoader(false);
+  };
+
   const contactColumnDefs: ColumnDef<contactType>[] = [
     {
       header: "Date",
@@ -119,6 +147,7 @@ const Contact: React.FC = () => {
           </Section>
         </Card>
       </Content>
+      {createPortal(PageLoader({ isShow: isShowPageLoader }), document.body)}
     </>
   );
 };

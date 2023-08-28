@@ -1,15 +1,22 @@
-import { log } from "console";
-import { stat } from "fs";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useReducer, useState } from "react";
+import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import icons from "../assets/icons/icons";
 import images from "../assets/images/images";
+import { login } from "../backendApi/apiHandlers/auth";
+import { getHeader, saveHeader, setHeader } from "../backendApi/Header";
+import DialogValidation from "../component/Dialog/DialogValidation";
 import InputField from "../component/Input/InputField";
+import PageLoader from "../component/Loader/PageLoader";
+import { handleLogin } from "../handlers/loginHandler";
+import { createResponseError } from "../utils/errorHandler";
 
 enum loginActionType {
   SET_USERNAME = "SET_USERNAME",
   SET_PASSWORD = "SET_PASSWORD",
   SET_USERNAMEERROR = "SET_USERNAMEERROR",
   SET_PASSWORDERROR = "SET_PASSWORDERROR",
+  SET_ERROR = "SET_ERROR",
   SET_LOGINISAVAIL = "SET_LOGIN",
 }
 
@@ -34,22 +41,27 @@ const usernameReducer = (
 ): loginState => {
   switch (action.type) {
     case loginActionType.SET_USERNAME:
-      const mailformat = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
-      if (action.payload.match(mailformat)) {
-        return {
-          ...state,
-          usernameIsValid: true,
-          username: action.payload,
-        };
-      } else {
-        return {
-          ...state,
-          usernameIsValid: false,
-          username: action.payload,
-        };
-      }
+      // const mailformat = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
+      // if (action.payload.match(mailformat)) {
+      //   return {
+      //     ...state,
+      //     usernameIsValid: true,
+      //     username: action.payload,
+      //   };
+      // } else {
+      //   return {
+      //     ...state,
+      //     usernameIsValid: false,
+      //     username: action.payload,
+      //   };
+      // }
+      return {
+        ...state,
+        usernameIsValid: true,
+        username: action.payload,
+      };
     case loginActionType.SET_PASSWORD:
-      if (action.payload.length > 7) {
+      if (action.payload.length > 1) {
         return {
           ...state,
           passwordIsValid: true,
@@ -91,7 +103,6 @@ const usernameReducer = (
           usernameError: "Email is not valid",
         };
       }
-
     case loginActionType.SET_PASSWORDERROR:
       if (state.passwordIsValid) {
         return {
@@ -109,6 +120,12 @@ const usernameReducer = (
           passwordError: "Password must be at least 8 characters",
         };
       }
+    case loginActionType.SET_ERROR:
+      return {
+        ...state,
+        usernameError: action.payload,
+        passwordError: action.payload,
+      };
     default:
       return state;
   }
@@ -125,26 +142,25 @@ const Login = () => {
     loginIsValid: false,
   });
 
-  function loginHandler(event: React.FormEvent<HTMLFormElement>): void {
+  const navigate = useNavigate();
+
+  async function loginHandler(
+    event: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault();
-    if (loginState.loginIsValid) {
-      localStorage.setItem("token", `${Math.ceil(Math.random() * 10000)}`);
-      window.location.href = "/";
-    } else {
-      setLoginState({
-        type: loginActionType.SET_USERNAMEERROR,
-        payload: loginState.username,
-      });
-      setLoginState({
-        type: loginActionType.SET_PASSWORDERROR,
-        payload: loginState.password,
-      });
+    setIsShowPageLoader(true);
+    try {
+      await handleLogin(loginState.username, loginState.password);
+      navigate("/");
+    } catch (errorDetails) {
+      console.log(errorDetails);
     }
+    setIsShowPageLoader(false);
   }
   const [isUsernameFocus, setIsUsernameFocus] = useState(false);
   const [isPasswordFocus, setIsPasswordFocus] = useState(false);
+  const [isShowPageLoader, setIsShowPageLoader] = useState(false);
 
-  console.log(loginState.loginIsValid);
   return (
     <>
       <div className="h-screen w-screen bg-[#22436C]">
@@ -190,7 +206,6 @@ const Login = () => {
                 }}
                 isError={loginState.usernameError !== "" && !isUsernameFocus}
                 onChange={(event) => {
-                  console.log(event.target.value);
                   setLoginState({
                     type: loginActionType.SET_USERNAME,
                     payload: event.target.value,
@@ -246,6 +261,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      {createPortal(<PageLoader isShow={isShowPageLoader} />, document.body)}
     </>
   );
 };

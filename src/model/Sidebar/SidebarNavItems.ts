@@ -209,6 +209,22 @@ const sidebarNavItems: navItem[] = [
     path: "/journal",
     icon: icons.work,
     isActive: false,
+    subNav: [
+      {
+        id: "journal-create",
+        title: "Create",
+        path: "/journal/create",
+        icon: icons.work,
+        isActive: false,
+      },
+      {
+        id: "journal-id",
+        title: "Edit",
+        path: "/journal/:id",
+        icon: icons.work,
+        isActive: false,
+      },
+    ],
   },
 ];
 

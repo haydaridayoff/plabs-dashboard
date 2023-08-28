@@ -56,6 +56,16 @@ export const getJournalById = (id: string) => {
   }
 };
 
+export const getBlankJournal = () => {
+  return {
+    id: "",
+    title: "",
+    publishDate: new Date(),
+    subtitle: "",
+    image: "",
+  };
+};
+
 export const updateJournal = (data: journalType) => {
   const index = randomJournals.findIndex((item) => item.id === data.id);
   if (index !== -1) {

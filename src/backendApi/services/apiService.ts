@@ -1,0 +1,46 @@
+// apiService.ts
+import axios, { AxiosResponse } from "axios";
+import { getAccessToken } from "../../utils/tokenManager";
+
+const instance = axios.create({
+  baseURL: "http://127.0.0.1:8000/api", // Your API base URL
+});
+
+instance.interceptors.request.use(
+  (config) => {
+    const accessToken = getAccessToken(); // Replace with your method to get the access token
+    console.log("duar");
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+interface Headers {
+  [key: string]: string;
+}
+
+const apiService = {
+  get: async <T>(endpoint: string, headers?: Headers): Promise<T> => {
+    const response: AxiosResponse<T> = await instance.get(endpoint, {
+      headers: headers || {},
+    });
+    return response.data;
+  },
+  post: async <T>(
+    endpoint: string,
+    data: any,
+    headers?: Headers,
+  ): Promise<T> => {
+    const response: AxiosResponse<T> = await instance.post(endpoint, data, {
+      headers: headers || {},
+    });
+    return response.data;
+  },
+};
+
+export default apiService;
