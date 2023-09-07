@@ -1,12 +1,14 @@
 import { AxiosError } from "axios";
-import { logout } from "../backendApi/api/auth";
+import { getAllJob } from "../backendApi/api/job";
 import { handleAxiosError } from "../utils/errorHandler";
-import { clearAccessToken } from "../utils/tokenManager";
 
-const handleLogout = async () => {
+export const handleGetAllJob = async () => {
   try {
-    await logout();
-    clearAccessToken();
+    const response = await getAllJob();
+    return {
+      data: response.data,
+      paginate: response.paginate,
+    };
   } catch (error) {
     let apiErrorDetails;
     if (error instanceof AxiosError) {
@@ -19,5 +21,3 @@ const handleLogout = async () => {
     }
   }
 };
-
-export default handleLogout;

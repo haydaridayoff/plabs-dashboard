@@ -1,9 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   createPartner,
   deletePartner,
   getPartner,
+  partnerStatus,
   partnerType,
   updatePartner,
 } from "../api/Partner";
@@ -13,8 +14,43 @@ import DialogPartner from "../component/Dialog/DialogPartner";
 import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
+import {
+  NotificationType,
+  useNotification,
+} from "../contexts/NotificationContext";
+import { handleGetAllPartner } from "../handlers/partnerHandler";
+import { ErrorDetails } from "../utils/errorHandler";
 
 const EcosystemPartner: React.FC = () => {
+  const { addNotification } = useNotification();
+
+  useEffect(() => {
+    getPartnerHandler();
+  }, []);
+
+  const getPartnerHandler = async () => {
+    try {
+      const response = await handleGetAllPartner();
+      const partners: partnerType[] = response.data.map((partner) => {
+        return {
+          id: partner.guid,
+          name: partner.name,
+          status: partnerStatus.off,
+          logo: {
+            type: "image",
+            src: partner.image,
+          },
+        };
+      });
+      setContent(partners);
+    } catch (errorDetails) {
+      addNotification({
+        type: NotificationType.ERROR,
+        message: (errorDetails as ErrorDetails).errorMessage,
+      });
+    }
+  };
+
   const partnerColumnDefs: ColumnDef<partnerType>[] = [
     {
       header: "Name",
@@ -52,9 +88,7 @@ const EcosystemPartner: React.FC = () => {
     },
   ];
 
-  const [content, setContent] = useState(
-    getPartner().map((item) => item.value),
-  );
+  const [content, setContent] = useState<partnerType[]>([]);
 
   const dialog = useContext(DialogFormContext);
 

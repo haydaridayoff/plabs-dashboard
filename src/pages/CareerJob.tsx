@@ -1,14 +1,58 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteJob, getJobs, status as jobStatus, jobType } from "../api/Job";
+import {
+  deleteJob,
+  getJobs,
+  status as jobStatus,
+  jobType,
+  status,
+} from "../api/Job";
 import icons from "../assets/icons/icons";
 import DialogFormContext from "../component/Dialog/DialogFormContext";
 import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
+import {
+  NotificationType,
+  useNotification,
+} from "../contexts/NotificationContext";
+import { handleGetAllJob } from "../handlers/jobHandler";
+import { ErrorDetails } from "../utils/errorHandler";
 
 const CareerJob: React.FC = () => {
+  useEffect(() => {
+    getAllJobHandler();
+  }, []);
+
+  const { addNotification } = useNotification();
+
+  const getAllJobHandler = async () => {
+    try {
+      const response = await handleGetAllJob();
+      let jobs: jobType[] = response.data.map((job) => {
+        return {
+          id: job.guid,
+          title: job.title,
+          location: job.location,
+          estimateSalary: job.estimated_salary,
+          type: job.type,
+          publishDate: new Date(job.publish_date),
+          image: job.image,
+          slug: job.slug,
+          message: job.messages,
+          status: 1,
+        };
+      });
+      setContent(jobs);
+    } catch (errorDetails) {
+      addNotification({
+        type: NotificationType.ERROR,
+        message: (errorDetails as ErrorDetails).errorMessage,
+      });
+    }
+  };
+
   const jobColumnDefs: ColumnDef<jobType>[] = [
     {
       header: "Title",
@@ -126,9 +170,7 @@ const CareerJob: React.FC = () => {
     dialog.openDialog(inputElement);
   };
 
-  const [content, setContent] = useState<jobType[]>(
-    getJobs().map((item) => item.value),
-  );
+  const [content, setContent] = useState<jobType[]>([]);
 
   return (
     <>

@@ -3,13 +3,18 @@ import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import icons from "../assets/icons/icons";
 import images from "../assets/images/images";
-import { login } from "../backendApi/apiHandlers/auth";
-import { getHeader, saveHeader, setHeader } from "../backendApi/Header";
-import DialogValidation from "../component/Dialog/DialogValidation";
 import InputField from "../component/Input/InputField";
 import PageLoader from "../component/Loader/PageLoader";
+import {
+  NotificationType,
+  useNotification,
+} from "../contexts/NotificationContext";
 import { handleLogin } from "../handlers/loginHandler";
-import { createResponseError } from "../utils/errorHandler";
+import {
+  createResponseError,
+  ErrorDetails,
+  getErrorMessage,
+} from "../utils/errorHandler";
 
 enum loginActionType {
   SET_USERNAME = "SET_USERNAME",
@@ -143,6 +148,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
 
   async function loginHandler(
     event: React.FormEvent<HTMLFormElement>,
@@ -152,8 +158,15 @@ const Login = () => {
     try {
       await handleLogin(loginState.username, loginState.password);
       navigate("/");
+      addNotification({
+        type: NotificationType.SUCCESS,
+        message: "Login Success",
+      });
     } catch (errorDetails) {
-      console.log(errorDetails);
+      addNotification({
+        type: NotificationType.ERROR,
+        message: "Login Failed, " + (errorDetails as ErrorDetails).errorMessage,
+      });
     }
     setIsShowPageLoader(false);
   }

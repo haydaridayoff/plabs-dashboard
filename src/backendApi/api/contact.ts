@@ -7,7 +7,7 @@ interface ContactData {
   date: string;
   name: string;
   email: string;
-  message: string;
+  messages: string;
 }
 
 interface GetAllContactResponseData {
@@ -27,6 +27,18 @@ export const getAllContact = async (): Promise<GetAllContactResponseData> => {
     const response = await apiService.get<GetAllContactResponseData>(
       "/contact",
     );
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error as AxiosError;
+    }
+    throw error;
+  }
+};
+
+export const deleteContact = async (id: string) => {
+  try {
+    const response = await apiService.delete(`/contact/${id}`);
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {

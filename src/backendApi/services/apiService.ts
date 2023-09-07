@@ -9,7 +9,6 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     const accessToken = getAccessToken(); // Replace with your method to get the access token
-    console.log("duar");
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
@@ -37,6 +36,12 @@ const apiService = {
     headers?: Headers,
   ): Promise<T> => {
     const response: AxiosResponse<T> = await instance.post(endpoint, data, {
+      headers: headers || {},
+    });
+    return response.data;
+  },
+  delete: async <T>(endpoint: string, headers?: Headers): Promise<T> => {
+    const response: AxiosResponse<T> = await instance.delete(endpoint, {
       headers: headers || {},
     });
     return response.data;

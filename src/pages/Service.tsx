@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   createService,
   deleteService,
@@ -17,11 +17,45 @@ import DialogService, {
 import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
+import {
+  NotificationType,
+  useNotification,
+} from "../contexts/NotificationContext";
+import { handleGetAllService } from "../handlers/serviceHandler";
+import { ErrorDetails } from "../utils/errorHandler";
 
 const Service: React.FC = () => {
-  const [content, setContent] = useState(
-    getServices().map((item) => item.value),
-  );
+  const [content, setContent] = useState<serviceType[]>([]);
+
+  const { addNotification } = useNotification();
+
+  useEffect(() => {
+    getAllServiceHandler();
+  }, []);
+
+  const getAllServiceHandler = async () => {
+    try {
+      const response = await handleGetAllService();
+      const services: serviceType[] = response.data.map((service) => {
+        return {
+          id: service.guid,
+          title: service.title,
+          description: service.description,
+          category: "",
+          file: {
+            fileType: "image",
+            fileSrc: service.file,
+          },
+        };
+      });
+      setContent(services);
+    } catch (errorDetails) {
+      addNotification({
+        type: NotificationType.ERROR,
+        message: (errorDetails as ErrorDetails).errorMessage,
+      });
+    }
+  };
 
   const serviceColumnDefs: ColumnDef<serviceType>[] = [
     {

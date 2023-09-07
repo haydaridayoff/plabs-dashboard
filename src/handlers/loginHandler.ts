@@ -1,6 +1,6 @@
 // loginHandler.ts
 import { AxiosError } from "axios";
-import { login } from "../backendApi/apiHandlers/auth";
+import { login } from "../backendApi/api/auth";
 import { handleAxiosError } from "../utils/errorHandler";
 import { setAccessToken } from "../utils/tokenManager";
 

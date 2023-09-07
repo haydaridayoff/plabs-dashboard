@@ -3,13 +3,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   contactType,
-  createContact,
   deleteContact,
   getContact,
   updateContact,
 } from "../api/Contact";
 import icons from "../assets/icons/icons";
-import { getAllContactsHandler } from "../backendApi/model/ContactHandler";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
 import DialogContact from "../component/Dialog/DialogContact";
@@ -18,11 +16,22 @@ import DialogValidation from "../component/Dialog/DialogValidation";
 import PageLoader from "../component/Loader/PageLoader";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
-import { handleGetAllContact } from "../handlers/contactHandler";
+import {
+  NotificationType,
+  useNotification,
+} from "../contexts/NotificationContext";
+import {
+  handleDeleteContact,
+  handleGetAllContact,
+} from "../handlers/contactHandler";
+import { ErrorDetails } from "../utils/errorHandler";
 
 const Contact: React.FC = () => {
   const [content, setContent] = useState<contactType[]>([]);
   const [isShowPageLoader, setIsShowPageLoader] = useState(false);
+
+  const dialog = useContext(DialogFormContext);
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     getAllContacts();
@@ -38,12 +47,15 @@ const Contact: React.FC = () => {
           name: contact.name,
           date: new Date(contact.date),
           email: contact.email,
-          message: contact.message,
+          message: contact.messages,
         };
       });
       setContent(contacts);
-    } catch (error) {
-      console.log(error);
+    } catch (errorDetails) {
+      addNotification({
+        type: NotificationType.ERROR,
+        message: (errorDetails as ErrorDetails).errorMessage,
+      });
     }
     setIsShowPageLoader(false);
   };
@@ -107,8 +119,6 @@ const Contact: React.FC = () => {
     },
   ];
 
-  const dialog = useContext(DialogFormContext);
-
   const editContactHandler = (data: contactType) => {
     const inputElement = (
       <DialogContact
@@ -128,9 +138,27 @@ const Contact: React.FC = () => {
       <DialogValidation
         title="Delete Contact"
         message="Are you sure want to delete this contact?"
-        onConfirm={() => {
-          deleteContact(data.id);
-          setContent(getContact().map((contact) => contact.value));
+        onConfirm={async () => {
+          setIsShowPageLoader(true);
+          try {
+            const response = await handleDeleteContact(data.id);
+            const contacts: contactType[] = response.data.map((contact) => {
+              return {
+                id: contact.guid,
+                name: contact.name,
+                date: new Date(contact.date),
+                email: contact.email,
+                message: contact.messages,
+              };
+            });
+            setContent(contacts);
+          } catch (errorDetails) {
+            addNotification({
+              type: NotificationType.ERROR,
+              message: (errorDetails as ErrorDetails).errorMessage,
+            });
+          }
+          setIsShowPageLoader(false);
         }}
       />
     );
