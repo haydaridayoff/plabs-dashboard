@@ -13,13 +13,21 @@ import React, { FC } from "react";
 import BottomPagination from "./BottomPagination";
 import getColumnsDef from "./columns";
 import GlobalFiltering from "./GlobalFiltering";
-import TopPagination from "./TopPagination";
 
 interface Props {
   data: any[];
+  pagination?: {
+    totalPage: number;
+    currentPage: number;
+    limit: number;
+    totalItem: number;
+  };
   columns?: ColumnDef<any>[];
   onEdit?: (data: any) => void;
   onDelete?: (data: any) => void;
+  onNextPage?: () => void;
+  onPrevPage?: () => void;
+  onGoToPage?: (page: number) => void;
 }
 
 const TableBase: FC<Props> = (props) => {
@@ -37,8 +45,10 @@ const TableBase: FC<Props> = (props) => {
   const [sortingState, setSortingState] = React.useState<SortingState>([]);
   const [paginationState, setPaginationState] = React.useState<PaginationState>(
     {
-      pageSize: 5,
-      pageIndex: 0,
+      pageSize: props.pagination?.limit ? props.pagination.limit : 5,
+      pageIndex: props.pagination?.currentPage
+        ? props.pagination.currentPage
+        : 1,
     },
   );
   const [globalFilter, setGlobalFilter] = React.useState<any>("");
@@ -63,14 +73,7 @@ const TableBase: FC<Props> = (props) => {
   const { getHeaderGroups, getRowModel } = tableInstance;
   return (
     <>
-      <div className="flex justify-between mb-3">
-        <TopPagination
-          currentPageSize={tableInstance.getState().pagination.pageSize}
-          pageSizeOptions={[5, 10, 20]}
-          onPageSizeChange={(event) =>
-            tableInstance.setPageSize(Number(event.target.value))
-          }
-        />
+      <div className="flex flex-row-reverse justify-between mb-3">
         <GlobalFiltering
           filter={tableInstance.getState().globalFilter}
           setFilter={tableInstance.setGlobalFilter}
@@ -98,8 +101,8 @@ const TableBase: FC<Props> = (props) => {
                   >
                     {header.isPlaceholder ? null : (
                       <div
-                        className="cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
+                        className="flex items-center gap-1"
+                        // onClick={header.column.getToggleSortingHandler()}
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -149,23 +152,26 @@ const TableBase: FC<Props> = (props) => {
         </table>
       </div>
       <BottomPagination
-        TotalPage={tableInstance.getPageCount()}
-        currentPage={tableInstance.getState().pagination.pageIndex + 1}
-        currentPageSize={tableInstance.getState().pagination.pageSize}
+        TotalPage={props.pagination?.totalPage ? props.pagination.totalPage : 1}
+        currentPage={
+          props.pagination?.currentPage ? props.pagination.currentPage : 1
+        }
+        currentPageSize={props.pagination?.limit ? props.pagination.limit : 5}
         pageSizeOptions={[5, 10, 20]}
         minItemIndex={
           //get top item index
-          tableInstance.getState().pagination.pageSize *
-          tableInstance.getState().pagination.pageIndex
+          props.pagination
+            ? (props.pagination.currentPage - 1) * props.pagination.limit + 1
+            : 1
         }
-        rowCount={tableInstance.getRowModel().rows.length}
-        totalItem={tableInstance.getFilteredRowModel().rows.length}
+        rowCount={props.data.length}
+        totalItem={props.pagination?.totalItem ? props.pagination.totalItem : 1}
         onPageSizeChange={(event) =>
           tableInstance.setPageSize(Number(event.target.value))
         }
-        onNextPage={tableInstance.nextPage}
-        onPrevPage={tableInstance.previousPage}
-        goToPage={(page) => tableInstance.setPageIndex(page - 1)}
+        onNextPage={props.onNextPage ? props.onNextPage : () => {}}
+        onPrevPage={props.onPrevPage ? props.onPrevPage : () => {}}
+        goToPage={props.onGoToPage ? props.onGoToPage : () => {}}
       ></BottomPagination>
     </>
   );

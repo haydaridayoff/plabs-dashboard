@@ -30,20 +30,38 @@ const apiService = {
     });
     return response.data;
   },
-  post: async <T>(
+  post: async <TResponse, TData>(
     endpoint: string,
-    data: any,
+    data: TData,
     headers?: Headers,
-  ): Promise<T> => {
-    const response: AxiosResponse<T> = await instance.post(endpoint, data, {
-      headers: headers || {},
-    });
+  ): Promise<TResponse> => {
+    const response: AxiosResponse<TResponse> = await instance.post(
+      endpoint,
+      data,
+      {
+        headers: headers || {},
+      },
+    );
     return response.data;
   },
   delete: async <T>(endpoint: string, headers?: Headers): Promise<T> => {
     const response: AxiosResponse<T> = await instance.delete(endpoint, {
       headers: headers || {},
     });
+    return response.data;
+  },
+  put: async <TResponse, TData>(
+    endpoint: string,
+    data: TData,
+    headers?: Headers,
+  ): Promise<TResponse> => {
+    const response: AxiosResponse<TResponse> = await instance.put(
+      endpoint,
+      data,
+      {
+        headers: headers || {},
+      },
+    );
     return response.data;
   },
 };

@@ -1,12 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  contactType,
-  deleteContact,
-  getContact,
-  updateContact,
-} from "../api/Contact";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
+import { contactType } from "../api/Contact";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
@@ -17,48 +14,94 @@ import PageLoader from "../component/Loader/PageLoader";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
 import {
-  NotificationType,
-  useNotification,
-} from "../contexts/NotificationContext";
-import {
   handleDeleteContact,
   handleGetAllContact,
+  handleUpdateContact,
 } from "../handlers/contactHandler";
 import { ErrorDetails } from "../utils/errorHandler";
 
 const Contact: React.FC = () => {
   const [content, setContent] = useState<contactType[]>([]);
   const [isShowPageLoader, setIsShowPageLoader] = useState(false);
+  const [contactPagination, setContactPagination] = useState({
+    page: 0,
+    limit: 0,
+  });
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  let limitParam = searchParams.get("limit");
+  let pageParam = searchParams.get("page");
 
   const dialog = useContext(DialogFormContext);
-  const { addNotification } = useNotification();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getAllContacts();
-  }, []);
-
-  const getAllContacts = async () => {
-    setIsShowPageLoader(true);
-    try {
-      const response = await handleGetAllContact();
-      const contacts: contactType[] = response.data.map((contact) => {
-        return {
-          id: contact.guid,
-          name: contact.name,
-          date: new Date(contact.date),
-          email: contact.email,
-          message: contact.messages,
-        };
+    if (!limitParam || !pageParam) {
+      navigate(`?page=${1}&limit=${5}`);
+      setContactPagination({
+        page: 1,
+        limit: 5,
       });
-      setContent(contacts);
-    } catch (errorDetails) {
-      addNotification({
-        type: NotificationType.ERROR,
-        message: (errorDetails as ErrorDetails).errorMessage,
-      });
+      console.log("limit or page is null");
+      return;
     }
-    setIsShowPageLoader(false);
-  };
+
+    const limit = parseInt(limitParam!);
+    const page = parseInt(pageParam!);
+    if (limit === 0 || page === 0) {
+      navigate(`?page=${1}&limit=${5}`);
+      setContactPagination({
+        page: 1,
+        limit: 5,
+      });
+      console.log("limit or page is 0");
+      return;
+    }
+    if (isNaN(limit) || isNaN(page)) {
+      console.log("limit or page is NaN");
+      return;
+    }
+
+    if (contactPagination.limit !== limit || contactPagination.page !== page) {
+      setContactPagination({
+        page: page,
+        limit: limit,
+      });
+      console.log("limit or page is not equal", limit, page);
+      return;
+    }
+
+    toast.promise(
+      handleGetAllContact(parseInt(limitParam), parseInt(pageParam)),
+      {
+        loading: "Loading...",
+        success: (response) => {
+          const contacts: contactType[] = response.data.map((contact) => {
+            return {
+              id: contact.guid,
+              name: contact.name,
+              date: new Date(contact.date),
+              email: contact.email,
+              message: contact.messages,
+            };
+          });
+          setContent(contacts);
+          setContactPagination({
+            page: parseInt(pageParam!),
+            limit: parseInt(limitParam!),
+          });
+          return "Contact Loaded";
+        },
+        error: (errorDetails) => {
+          return (errorDetails as ErrorDetails).errorMessage;
+        },
+      },
+      {
+        position: "top-right",
+      },
+    );
+  }, [contactPagination.limit, contactPagination.page, limitParam, pageParam]);
 
   const contactColumnDefs: ColumnDef<contactType>[] = [
     {
@@ -125,8 +168,44 @@ const Contact: React.FC = () => {
         data={data}
         title="Edit Contact"
         onSubmit={(data) => {
-          updateContact(data);
-          setContent(getContact().map((contact) => contact.value));
+          setIsShowPageLoader(true);
+          toast.promise(
+            handleUpdateContact(
+              data.id,
+              {
+                name: data.name,
+                email: data.email,
+                date: data.date.toISOString(),
+                messages: data.message,
+              },
+              contactPagination.limit,
+              contactPagination.page,
+            ),
+            {
+              loading: "Loading...",
+              success: (response) => {
+                const contacts: contactType[] = response.data.map((contact) => {
+                  return {
+                    id: contact.guid,
+                    name: contact.name,
+                    date: new Date(contact.date),
+                    email: contact.email,
+                    message: contact.messages,
+                  };
+                });
+                setContent(contacts);
+                setIsShowPageLoader(false);
+                return "Contact Updated";
+              },
+              error: (errorDetails) => {
+                setIsShowPageLoader(false);
+                return (errorDetails as ErrorDetails).errorMessage;
+              },
+            },
+            {
+              position: "top-right",
+            },
+          );
         }}
       />
     );
@@ -140,29 +219,40 @@ const Contact: React.FC = () => {
         message="Are you sure want to delete this contact?"
         onConfirm={async () => {
           setIsShowPageLoader(true);
-          try {
-            const response = await handleDeleteContact(data.id);
-            const contacts: contactType[] = response.data.map((contact) => {
-              return {
-                id: contact.guid,
-                name: contact.name,
-                date: new Date(contact.date),
-                email: contact.email,
-                message: contact.messages,
-              };
-            });
-            setContent(contacts);
-          } catch (errorDetails) {
-            addNotification({
-              type: NotificationType.ERROR,
-              message: (errorDetails as ErrorDetails).errorMessage,
-            });
-          }
-          setIsShowPageLoader(false);
+          toast.promise(
+            handleDeleteContact(
+              data.id,
+              contactPagination.limit,
+              contactPagination.page,
+            ),
+            {
+              loading: "Loading...",
+              success: (response) => {
+                const contacts: contactType[] = response.data.map((contact) => {
+                  return {
+                    id: contact.guid,
+                    name: contact.name,
+                    date: new Date(contact.date),
+                    email: contact.email,
+                    message: contact.messages,
+                  };
+                });
+                setContent(contacts);
+                setIsShowPageLoader(false);
+                return "Contact Deleted";
+              },
+              error: (errorDetails) => {
+                setIsShowPageLoader(false);
+                return (errorDetails as ErrorDetails).errorMessage;
+              },
+            },
+            {
+              position: "top-right",
+            },
+          );
         }}
       />
     );
-
     dialog.openDialog(inputElement);
   };
 

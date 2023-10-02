@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter, RouterProvider } from "react-router-dom";
 import NotificationDisplay from "./component/Notification/NotificationDisplay";
 import Sidebar from "./component/Sidebar/Sidebar";
@@ -14,6 +15,7 @@ function App() {
         <RouterProvider router={router} />
         <NotificationDisplay />
       </NotificationProvider>
+      <Toaster />
     </>
   );
 }

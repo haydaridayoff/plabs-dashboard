@@ -23,7 +23,10 @@ export const login = async (
   password: string,
 ): Promise<LoginResponse> => {
   try {
-    const response = await apiService.post<LoginResponse>("/auth/login", {
+    const response = await apiService.post<
+      LoginResponse,
+      { email: string; password: string }
+    >("/auth/login", {
       email,
       password,
     });
@@ -38,7 +41,7 @@ export const login = async (
 
 export const logout = async (): Promise<LogoutResponse> => {
   try {
-    const response = await apiService.post<LogoutResponse>(
+    const response = await apiService.post<LogoutResponse, null>(
       "/auth/logout",
       null,
     );

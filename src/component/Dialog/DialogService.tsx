@@ -98,9 +98,7 @@ const DialogService: React.FC<Props> = (props) => {
                 readOnly={false}
                 onFileChange={(e) => {
                   content.file.fileType = "image";
-                  content.file.fileSrc = URL.createObjectURL(
-                    e.target.files![0],
-                  );
+                  content.file.fileSrc = e.target.files![0];
                   setContent({ ...content });
                   setIsSubmitDisabled(isDataEmpty(content));
                 }}

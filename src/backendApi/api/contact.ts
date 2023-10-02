@@ -22,10 +22,20 @@ interface GetAllContactResponseData {
   };
 }
 
-export const getAllContact = async (): Promise<GetAllContactResponseData> => {
+export interface ContactRequestData {
+  date: string;
+  name: string;
+  email: string;
+  messages: string;
+}
+
+export const getAllContact = async (
+  limit: number,
+  page: number,
+): Promise<GetAllContactResponseData> => {
   try {
     const response = await apiService.get<GetAllContactResponseData>(
-      "/contact",
+      "/contact?limit=" + limit + "&page=" + page + "",
     );
     return response;
   } catch (error) {
@@ -39,6 +49,18 @@ export const getAllContact = async (): Promise<GetAllContactResponseData> => {
 export const deleteContact = async (id: string) => {
   try {
     const response = await apiService.delete(`/contact/${id}`);
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error as AxiosError;
+    }
+    throw error;
+  }
+};
+
+export const updateContact = async (id: string, data: ContactRequestData) => {
+  try {
+    const response = await apiService.put(`/contact/${id}`, data);
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {

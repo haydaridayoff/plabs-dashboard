@@ -1,12 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
-import {
-  createService,
-  deleteService,
-  getServices,
-  serviceType,
-  updateService,
-} from "../api/Service";
+import toast from "react-hot-toast";
+import { serviceType } from "../api/Service";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
 import Content from "../component/Content/Content";
@@ -17,17 +12,17 @@ import DialogService, {
 import DialogValidation from "../component/Dialog/DialogValidation";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
+import "../contexts/NotificationContext";
 import {
-  NotificationType,
-  useNotification,
-} from "../contexts/NotificationContext";
-import { handleGetAllService } from "../handlers/serviceHandler";
+  handleDeleteService,
+  handleGetAllService,
+  handlePostService,
+  handleUpdateService,
+} from "../handlers/serviceHandler";
 import { ErrorDetails } from "../utils/errorHandler";
 
 const Service: React.FC = () => {
   const [content, setContent] = useState<serviceType[]>([]);
-
-  const { addNotification } = useNotification();
 
   useEffect(() => {
     getAllServiceHandler();
@@ -50,9 +45,8 @@ const Service: React.FC = () => {
       });
       setContent(services);
     } catch (errorDetails) {
-      addNotification({
-        type: NotificationType.ERROR,
-        message: (errorDetails as ErrorDetails).errorMessage,
+      toast.error((errorDetails as ErrorDetails).errorMessage, {
+        position: "top-right",
       });
     }
   };
@@ -73,9 +67,11 @@ const Service: React.FC = () => {
       accessorKey: "description",
       size: 300,
       cell: (info) => (
-        <p className="h-24 text-ellipsis overflow-hidden">
-          {info.getValue() as string}
-        </p>
+        <div className="flex items-center h-24 overflow-hidden">
+          <p className="h-auto text-ellipsis break-all">
+            {info.getValue() as string}
+          </p>
+        </div>
       ),
     },
     {
@@ -105,8 +101,36 @@ const Service: React.FC = () => {
         data={data}
         title="Edit Service"
         onSubmit={(item) => {
-          updateService(item);
-          setContent([...getServices().map((item) => item.value)]);
+          toast.promise(
+            handleUpdateService(item.id, {
+              file: item.file.fileSrc as File,
+              description: item.description,
+              title: item.title,
+            }),
+            {
+              loading: "Updating Service",
+              success: (response) => {
+                setContent(
+                  response.data.map((service) => {
+                    return {
+                      id: service.guid,
+                      title: service.title,
+                      description: service.description,
+                      category: "",
+                      file: {
+                        fileType: "image",
+                        fileSrc: service.file,
+                      },
+                    };
+                  }),
+                );
+                return "Service Updated";
+              },
+              error: (error) =>
+                "Error Updating Service, " +
+                (error as ErrorDetails).errorMessage,
+            },
+          );
         }}
       />
     );
@@ -119,8 +143,35 @@ const Service: React.FC = () => {
       <DialogService
         title="Add Service"
         onSubmit={(item) => {
-          createService(item);
-          setContent([...getServices().map((item) => item.value)]);
+          toast.promise(
+            handlePostService({
+              file: item.file.fileSrc as File,
+              description: item.description,
+              title: item.title,
+            }),
+            {
+              loading: "Adding Service",
+              success: (response) => {
+                setContent(
+                  response.data.map((service) => {
+                    return {
+                      id: service.guid,
+                      title: service.title,
+                      description: service.description,
+                      category: "",
+                      file: {
+                        fileType: "image",
+                        fileSrc: service.file,
+                      },
+                    };
+                  }),
+                );
+                return "Service Added";
+              },
+              error: (error) =>
+                "Error Adding Service, " + (error as ErrorDetails).errorMessage,
+            },
+          );
         }}
         data={getBlankService()}
       />
@@ -135,8 +186,28 @@ const Service: React.FC = () => {
         title="Delete Service"
         message="Are you sure you want to delete this service?"
         onConfirm={() => {
-          deleteService(data.id);
-          setContent([...getServices().map((item) => item.value)]);
+          toast.promise(handleDeleteService(data.id), {
+            loading: "Deleting Service",
+            success: (response) => {
+              setContent(
+                response.data.map((service) => {
+                  return {
+                    id: service.guid,
+                    title: service.title,
+                    description: service.description,
+                    category: "",
+                    file: {
+                      fileType: "image",
+                      fileSrc: service.file,
+                    },
+                  };
+                }),
+              );
+              return "Service Deleted";
+            },
+            error: (error) =>
+              "Error Deleting Service, " + (error as ErrorDetails).errorMessage,
+          });
         }}
       />
     );

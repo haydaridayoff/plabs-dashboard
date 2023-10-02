@@ -1,20 +1,14 @@
-import React, { useContext, useReducer, useState } from "react";
+import React, { useReducer, useState } from "react";
 import { createPortal } from "react-dom";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import icons from "../assets/icons/icons";
 import images from "../assets/images/images";
 import InputField from "../component/Input/InputField";
 import PageLoader from "../component/Loader/PageLoader";
-import {
-  NotificationType,
-  useNotification,
-} from "../contexts/NotificationContext";
+import "../contexts/NotificationContext";
 import { handleLogin } from "../handlers/loginHandler";
-import {
-  createResponseError,
-  ErrorDetails,
-  getErrorMessage,
-} from "../utils/errorHandler";
+import { ErrorDetails } from "../utils/errorHandler";
 
 enum loginActionType {
   SET_USERNAME = "SET_USERNAME",
@@ -46,25 +40,20 @@ const usernameReducer = (
 ): loginState => {
   switch (action.type) {
     case loginActionType.SET_USERNAME:
-      // const mailformat = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
-      // if (action.payload.match(mailformat)) {
-      //   return {
-      //     ...state,
-      //     usernameIsValid: true,
-      //     username: action.payload,
-      //   };
-      // } else {
-      //   return {
-      //     ...state,
-      //     usernameIsValid: false,
-      //     username: action.payload,
-      //   };
-      // }
-      return {
-        ...state,
-        usernameIsValid: true,
-        username: action.payload,
-      };
+      const mailformat = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
+      if (action.payload.match(mailformat)) {
+        return {
+          ...state,
+          usernameIsValid: true,
+          username: action.payload,
+        };
+      } else {
+        return {
+          ...state,
+          usernameIsValid: false,
+          username: action.payload,
+        };
+      }
     case loginActionType.SET_PASSWORD:
       if (action.payload.length > 1) {
         return {
@@ -148,7 +137,6 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
-  const { addNotification } = useNotification();
 
   async function loginHandler(
     event: React.FormEvent<HTMLFormElement>,
@@ -158,15 +146,13 @@ const Login = () => {
     try {
       await handleLogin(loginState.username, loginState.password);
       navigate("/");
-      addNotification({
-        type: NotificationType.SUCCESS,
-        message: "Login Success",
-      });
     } catch (errorDetails) {
-      addNotification({
-        type: NotificationType.ERROR,
-        message: "Login Failed, " + (errorDetails as ErrorDetails).errorMessage,
-      });
+      toast.error(
+        "Login Failed, " + (errorDetails as ErrorDetails).errorMessage,
+        {
+          position: "top-right",
+        },
+      );
     }
     setIsShowPageLoader(false);
   }

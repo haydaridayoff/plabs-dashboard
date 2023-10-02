@@ -6,7 +6,7 @@ export type serviceType = {
   category: string;
   file: {
     fileType: string;
-    fileSrc: string;
+    fileSrc: string | File;
   };
   description: string;
 };
