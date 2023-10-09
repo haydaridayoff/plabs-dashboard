@@ -27,8 +27,6 @@ const FileInput: React.FC<Props> = (props) => {
   const inputFileOnChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    console.log(event.target.files);
-    console.log(URL.createObjectURL(event.target.files![0]));
     preview = URL.createObjectURL(event.target.files![0]);
     props.onFileChange && props.onFileChange(event);
   };

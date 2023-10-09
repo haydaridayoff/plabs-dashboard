@@ -26,12 +26,11 @@ interface Headers {
 const apiService = {
   get: async <T>(
     endpoint: string,
-    headers?: Headers,
-    signal?: AbortSignal,
+    option?: { headers?: Headers; signal?: AbortSignal },
   ): Promise<T> => {
     const response: AxiosResponse<T> = await instance.get(endpoint, {
-      headers: headers ?? {},
-      signal: signal,
+      headers: option?.headers ?? {},
+      signal: option?.signal ?? undefined,
     });
     return response.data;
   },

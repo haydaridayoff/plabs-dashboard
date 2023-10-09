@@ -127,9 +127,7 @@ export const SidebarContextProvider: React.FC<Props> = (props) => {
         ...ids,
       );
     }
-    console.log(index);
     if (index === 0) {
-      console.log("setNavItemsStatus");
       setNavItemsStatus([...navItems]);
       navActiveItems.current = [...activeItems];
     }

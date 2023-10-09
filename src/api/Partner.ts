@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { projectType } from "./Project";
 
 export enum partnerStatus {
   on,
@@ -14,6 +13,12 @@ export type partnerType = {
     type: string;
     src: string;
   };
+};
+
+export type partnerRequestType = {
+  name: string;
+  status: partnerStatus;
+  file: File | null;
 };
 
 const createRandomPartners = (count: number) => {
@@ -90,5 +95,13 @@ export const getBlankPartner = (): partnerType => {
       type: "image",
       src: "",
     },
+  };
+};
+
+export const getBlankPartnerRequest = (): partnerRequestType => {
+  return {
+    name: "",
+    status: partnerStatus.on,
+    file: new File([], ""),
   };
 };

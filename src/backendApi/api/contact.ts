@@ -37,6 +37,7 @@ export const getAllContact = async (
   try {
     const response = await apiService.get<GetAllContactResponseData>(
       "/contact?limit=" + limit + "&page=" + page + "",
+      { signal: signal },
     );
     return response;
   } catch (error) {

@@ -2,14 +2,11 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  PaginationState,
-  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import React, { FC } from "react";
 import BottomPagination from "./BottomPagination";
 import getColumnsDef from "./columns";
-import GlobalFiltering from "./GlobalFiltering";
 
 interface Props {
   data: any[];

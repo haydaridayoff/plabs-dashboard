@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { getBlankPartner, partnerStatus, partnerType } from "../../api/Partner";
+import {
+  getBlankPartnerRequest,
+  partnerRequestType,
+  partnerStatus,
+  partnerType,
+} from "../../api/Partner";
 import FileInput from "../Input/FileInput";
 import InputField from "../Input/InputField";
 import SelectInput from "../Input/SelectInput";
@@ -7,14 +12,20 @@ import DialogBase from "./Base/DialogBase";
 import DialogFormInput from "./Input/DialogFormInput";
 
 type Props = {
-  data?: partnerType;
+  data?: partnerRequestType;
   title: string;
   closeDialog?: () => void;
-  onSubmit: (data: partnerType) => void;
+  onSubmit: (data: partnerRequestType) => void;
 };
 
 const isDataEmpty = (data: partnerType) => {
   return data.logo.src === "" || data.status === undefined || data.name === "";
+};
+
+const isDataEmptyRequest = (data: partnerRequestType) => {
+  return (
+    data.status === undefined || data.name === "" || data.file === undefined
+  );
 };
 
 const status = [
@@ -29,11 +40,11 @@ const status = [
 ];
 
 const DialogPartner: React.FC<Props> = (props) => {
-  const [content, setContent] = useState<partnerType>(
-    props.data ? props.data : getBlankPartner(),
+  const [content, setContent] = useState<partnerRequestType>(
+    props.data ? props.data : getBlankPartnerRequest(),
   );
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(
-    isDataEmpty(content),
+    isDataEmptyRequest(content),
   );
   return (
     <DialogBase title={props.title} closeDialog={props.closeDialog}>
@@ -52,7 +63,7 @@ const DialogPartner: React.FC<Props> = (props) => {
               onChange={(e) => {
                 content.name = e.target.value;
                 setContent({ ...content });
-                setIsSubmitDisabled(isDataEmpty(content));
+                setIsSubmitDisabled(isDataEmptyRequest(content));
               }}
             />
           </div>
@@ -72,7 +83,7 @@ const DialogPartner: React.FC<Props> = (props) => {
               onChange={(option) => {
                 content.status = option?.value;
                 setContent({ ...content });
-                setIsSubmitDisabled(isDataEmpty(content));
+                setIsSubmitDisabled(isDataEmptyRequest(content));
               }}
             />
           </div>
@@ -82,10 +93,9 @@ const DialogPartner: React.FC<Props> = (props) => {
               fileType="image"
               readOnly={false}
               onFileChange={(e) => {
-                content.logo.type = "image";
-                content.logo.src = URL.createObjectURL(e.target.files![0]);
+                content.file = e.target.files![0];
                 setContent({ ...content });
-                setIsSubmitDisabled(isDataEmpty(content));
+                setIsSubmitDisabled(isDataEmptyRequest(content));
               }}
             />
           </div>

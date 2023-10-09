@@ -1,13 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  deleteJob,
-  getJobs,
-  status as jobStatus,
-  jobType,
-  status,
-} from "../api/Job";
+import { deleteJob, getJobs, status as jobStatus, jobType } from "../api/Job";
 import icons from "../assets/icons/icons";
 import DialogFormContext from "../component/Dialog/DialogFormContext";
 import DialogValidation from "../component/Dialog/DialogValidation";

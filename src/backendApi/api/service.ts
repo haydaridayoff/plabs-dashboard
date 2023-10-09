@@ -55,8 +55,7 @@ export const getAllService = async (): Promise<GetAllServiceResponseData> => {
       "/service",
     );
     return response;
-  } catch (error) {
-    throw error;
+  } finally {
   }
 };
 
@@ -66,8 +65,7 @@ export const deleteService = async (id: string) => {
       `/service/${id}`,
     );
     return response;
-  } catch (error) {
-    throw error;
+  } finally {
   }
 };
 
@@ -78,8 +76,7 @@ export const updateService = async (id: string, data: ServiceRequestData) => {
       ServiceRequestData
     >(`/service/${id}`, data);
     return response;
-  } catch (error) {
-    throw error;
+  } finally {
   }
 };
 
@@ -93,7 +90,6 @@ export const postService = async (data: ServiceRequestData) => {
       },
     );
     return response;
-  } catch (error) {
-    throw error;
+  } finally {
   }
 };

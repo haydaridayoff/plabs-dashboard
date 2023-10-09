@@ -14,7 +14,6 @@ export const DialogFormContextProvider: React.FC<Props> = (props) => {
   };
 
   const openDialog = (node: React.ReactNode) => {
-    console.log("openDialog");
     setInputElement(node);
     setIsOpen(true);
   };

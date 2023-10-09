@@ -86,25 +86,22 @@ const AboutPartner: React.FC = () => {
   };
 
   const editPartnerHandler = (data: partnerTabType) => {
-    const partnerData = getPartnerById(data.id);
-
-    if (!partnerData) {
-      return;
-    }
-
-    const inputElement = (
-      <DialogPartner
-        title="Edit Partner"
-        data={partnerData}
-        onSubmit={(value) => {
-          updatePartner(value);
-          updatePartnerTabData(value);
-          setContent([...partnerTabData]);
-        }}
-      />
-    );
-
-    dialog.openDialog(inputElement);
+    // const partnerData = getPartnerById(data.id);
+    // if (!partnerData) {
+    //   return;
+    // }
+    // const inputElement = (
+    //   <DialogPartner
+    //     title="Edit Partner"
+    //     data={partnerData}
+    //     onSubmit={(value) => {
+    //       updatePartner(value);
+    //       updatePartnerTabData(value);
+    //       setContent([...partnerTabData]);
+    //     }}
+    //   />
+    // );
+    // dialog.openDialog(inputElement);
   };
 
   const deletePartnerHandler = (data: partnerTabType) => {

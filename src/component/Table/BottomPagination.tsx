@@ -15,7 +15,6 @@ type Props = {
 };
 
 const getThreePage = (currentPage: number, TotalPage: number) => {
-  console.log(currentPage, TotalPage);
   if (TotalPage < 3) {
     if (TotalPage === 0) {
       return [];
