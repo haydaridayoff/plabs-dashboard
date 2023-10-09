@@ -1,6 +1,3 @@
-import { constants } from "crypto";
-import { on } from "events";
-import { useState } from "react";
 import icons from "../../assets/icons/icons";
 
 type Props = {
@@ -18,6 +15,7 @@ type Props = {
 };
 
 const getThreePage = (currentPage: number, TotalPage: number) => {
+  console.log(currentPage, TotalPage);
   if (TotalPage < 3) {
     if (TotalPage === 0) {
       return [];
@@ -33,6 +31,9 @@ const getThreePage = (currentPage: number, TotalPage: number) => {
     return [1, 2, 3];
   }
   if (currentPage === TotalPage) {
+    return [currentPage - 2, currentPage - 1, currentPage];
+  }
+  if (currentPage > TotalPage) {
     return [currentPage - 2, currentPage - 1, currentPage];
   }
   return [currentPage - 1, currentPage, currentPage + 1];
@@ -73,11 +74,17 @@ const BottomPagination: React.FC<Props> = (props) => {
             Rows per page: {item}
           </option>
         ))}
+        {props.pageSizeOptions.includes(props.currentPageSize) ? null : (
+          <option value={props.currentPageSize}>
+            Rows per page: {props.currentPageSize}
+          </option>
+        )}
       </select>
       <div className="flex gap-2 items-center">
         <div>
           {props.rowCount > 0 ? props.minItemIndex + 1 : 0} -{" "}
-          {props.minItemIndex + props.rowCount} of {props.totalItem} items
+          {props.rowCount > 0 ? props.minItemIndex + props.rowCount : 0} of{" "}
+          {props.totalItem} items
         </div>
         <div className="flex gap-1 items-center">
           <button

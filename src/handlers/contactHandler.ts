@@ -7,12 +7,17 @@ import {
 } from "../backendApi/api/contact";
 import { handleAxiosError } from "../utils/errorHandler";
 
-export const handleGetAllContact = async (limit: number, page: number) => {
+export const handleGetAllContact = async (
+  limit: number,
+  page: number,
+  signal?: AbortSignal,
+) => {
   try {
-    const response = await getAllContact(limit, page);
+    const response = await getAllContact(limit, page, signal);
     return {
       data: response.data,
       paginate: response.paginate,
+      message: response.message,
     };
   } catch (error) {
     let apiErrorDetails;

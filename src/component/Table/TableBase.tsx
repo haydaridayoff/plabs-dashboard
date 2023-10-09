@@ -2,9 +2,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   PaginationState,
   SortingState,
   useReactTable,
@@ -28,6 +25,7 @@ interface Props {
   onNextPage?: () => void;
   onPrevPage?: () => void;
   onGoToPage?: (page: number) => void;
+  onPropsSizeChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const TableBase: FC<Props> = (props) => {
@@ -42,43 +40,21 @@ const TableBase: FC<Props> = (props) => {
         },
       );
 
-  const [sortingState, setSortingState] = React.useState<SortingState>([]);
-  const [paginationState, setPaginationState] = React.useState<PaginationState>(
-    {
-      pageSize: props.pagination?.limit ? props.pagination.limit : 5,
-      pageIndex: props.pagination?.currentPage
-        ? props.pagination.currentPage
-        : 1,
-    },
-  );
-  const [globalFilter, setGlobalFilter] = React.useState<any>("");
-
   const tableInstance = useReactTable({
     columns: columnProps,
     data: props.data,
-    getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting: sortingState,
-      pagination: paginationState,
-      globalFilter: globalFilter,
-    },
-    onSortingChange: setSortingState,
-    onPaginationChange: setPaginationState,
-    onGlobalFilterChange: setGlobalFilter,
   });
 
   const { getHeaderGroups, getRowModel } = tableInstance;
   return (
     <>
-      <div className="flex flex-row-reverse justify-between mb-3">
+      {/* <div className="flex flex-row-reverse justify-between mb-3">
         <GlobalFiltering
           filter={tableInstance.getState().globalFilter}
           setFilter={tableInstance.setGlobalFilter}
         />
-      </div>
+      </div> */}
       <div className="overflow-x-auto w-full">
         <table className="w-full">
           <thead className="flex-none">
@@ -161,14 +137,15 @@ const TableBase: FC<Props> = (props) => {
         minItemIndex={
           //get top item index
           props.pagination
-            ? (props.pagination.currentPage - 1) * props.pagination.limit + 1
-            : 1
+            ? Math.max(
+                (props.pagination.currentPage - 1) * props.pagination.limit,
+                0,
+              )
+            : 0
         }
         rowCount={props.data.length}
-        totalItem={props.pagination?.totalItem ? props.pagination.totalItem : 1}
-        onPageSizeChange={(event) =>
-          tableInstance.setPageSize(Number(event.target.value))
-        }
+        totalItem={props.pagination?.totalItem ? props.pagination.totalItem : 0}
+        onPageSizeChange={props.onPropsSizeChange ?? (() => {})}
         onNextPage={props.onNextPage ? props.onNextPage : () => {}}
         onPrevPage={props.onPrevPage ? props.onPrevPage : () => {}}
         goToPage={props.onGoToPage ? props.onGoToPage : () => {}}

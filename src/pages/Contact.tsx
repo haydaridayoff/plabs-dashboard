@@ -2,7 +2,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
 import { contactType } from "../api/Contact";
 import icons from "../assets/icons/icons";
 import Card from "../component/Card/Card";
@@ -13,6 +12,7 @@ import DialogValidation from "../component/Dialog/DialogValidation";
 import PageLoader from "../component/Loader/PageLoader";
 import Section from "../component/Section/Section";
 import TableBase from "../component/Table/TableBase";
+import { usePagination } from "../contexts/usePagination";
 import {
   handleDeleteContact,
   handleGetAllContact,
@@ -23,85 +23,61 @@ import { ErrorDetails } from "../utils/errorHandler";
 const Contact: React.FC = () => {
   const [content, setContent] = useState<contactType[]>([]);
   const [isShowPageLoader, setIsShowPageLoader] = useState(false);
-  const [contactPagination, setContactPagination] = useState({
-    page: 0,
-    limit: 0,
-  });
-
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  let limitParam = searchParams.get("limit");
-  let pageParam = searchParams.get("page");
 
   const dialog = useContext(DialogFormContext);
-  const navigate = useNavigate();
+  const {
+    limit,
+    page,
+    totalData,
+    totalPage,
+    setLimit,
+    setPage,
+    setTotalData,
+    setTotalPage,
+    nextPage,
+    prevPage,
+  } = usePagination(1, 5, 0, 0);
 
   useEffect(() => {
-    if (!limitParam || !pageParam) {
-      navigate(`?page=${1}&limit=${5}`);
-      setContactPagination({
-        page: 1,
-        limit: 5,
+    let isCancel = false;
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const promise = handleGetAllContact(limit, page, signal);
+    const toastLoader = toast.loading("Loading to fetch contact data...", {
+      position: "top-right",
+    });
+    promise
+      .then((response) => {
+        if (isCancel) {
+          return;
+        }
+        const contacts: contactType[] = response.data.map((contact) => {
+          return {
+            id: contact.guid,
+            name: contact.name,
+            date: new Date(contact.date),
+            email: contact.email,
+            message: contact.messages,
+          };
+        });
+        setContent(contacts);
+        setTotalData(response.paginate.total_data);
+        setTotalPage(response.paginate.total_page);
+      })
+      .catch((errorDetails) => {
+        toast.error((errorDetails as ErrorDetails).errorMessage, {
+          position: "top-right",
+        });
+      })
+      .finally(() => {
+        toast.dismiss(toastLoader);
       });
-      console.log("limit or page is null");
-      return;
-    }
-
-    const limit = parseInt(limitParam!);
-    const page = parseInt(pageParam!);
-    if (limit === 0 || page === 0) {
-      navigate(`?page=${1}&limit=${5}`);
-      setContactPagination({
-        page: 1,
-        limit: 5,
-      });
-      console.log("limit or page is 0");
-      return;
-    }
-    if (isNaN(limit) || isNaN(page)) {
-      console.log("limit or page is NaN");
-      return;
-    }
-
-    if (contactPagination.limit !== limit || contactPagination.page !== page) {
-      setContactPagination({
-        page: page,
-        limit: limit,
-      });
-      console.log("limit or page is not equal", limit, page);
-      return;
-    }
-
-    toast.promise(
-      handleGetAllContact(parseInt(limitParam), parseInt(pageParam)),
-      {
-        loading: "Loading...",
-        success: (response) => {
-          const contacts: contactType[] = response.data.map((contact) => {
-            return {
-              id: contact.guid,
-              name: contact.name,
-              date: new Date(contact.date),
-              email: contact.email,
-              message: contact.messages,
-            };
-          });
-          setContent(contacts);
-          setContactPagination({
-            page: parseInt(pageParam!),
-            limit: parseInt(limitParam!),
-          });
-          return "Contact Loaded";
-        },
-        error: (errorDetails) => {
-          return (errorDetails as ErrorDetails).errorMessage;
-        },
-      },
-      {
-        position: "top-right",
-      },
-    );
-  }, [contactPagination.limit, contactPagination.page, limitParam, pageParam]);
+    return () => {
+      isCancel = true;
+      toast.remove();
+      controller.abort();
+    };
+  }, [limit, page]);
 
   const contactColumnDefs: ColumnDef<contactType>[] = [
     {
@@ -141,7 +117,7 @@ const Contact: React.FC = () => {
       size: 400,
       accessorKey: "message",
       cell: (info) => (
-        <p className="h-24 text-ellipsis overflow-hidden line-clamp-4">
+        <p className="text-ellipsis overflow-hidden line-clamp-4 break-all">
           {info.getValue() as string}
         </p>
       ),
@@ -178,8 +154,8 @@ const Contact: React.FC = () => {
                 date: data.date.toISOString(),
                 messages: data.message,
               },
-              contactPagination.limit,
-              contactPagination.page,
+              limit,
+              page,
             ),
             {
               loading: "Loading...",
@@ -220,11 +196,7 @@ const Contact: React.FC = () => {
         onConfirm={async () => {
           setIsShowPageLoader(true);
           toast.promise(
-            handleDeleteContact(
-              data.id,
-              contactPagination.limit,
-              contactPagination.page,
-            ),
+            handleDeleteContact(data.id, limit, page),
             {
               loading: "Loading...",
               success: (response) => {
@@ -238,6 +210,8 @@ const Contact: React.FC = () => {
                   };
                 });
                 setContent(contacts);
+                setTotalData(response.paginate.total_data);
+                setTotalPage(response.paginate.total_page);
                 setIsShowPageLoader(false);
                 return "Contact Deleted";
               },
@@ -261,7 +235,23 @@ const Contact: React.FC = () => {
       <Content>
         <Card>
           <Section title="Contact" type="None" isLast>
-            <TableBase columns={contactColumnDefs} data={content} />
+            <TableBase
+              columns={contactColumnDefs}
+              data={content}
+              pagination={{
+                currentPage: page,
+                limit: limit,
+                totalItem: totalData,
+                totalPage: totalPage,
+              }}
+              onNextPage={nextPage}
+              onPrevPage={prevPage}
+              onGoToPage={(page) => setPage(page)}
+              onPropsSizeChange={(event) => {
+                setLimit(parseInt(event.target.value));
+                setPage(1);
+              }}
+            />
           </Section>
         </Card>
       </Content>

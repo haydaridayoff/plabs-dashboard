@@ -32,6 +32,7 @@ export interface ContactRequestData {
 export const getAllContact = async (
   limit: number,
   page: number,
+  signal?: AbortSignal,
 ): Promise<GetAllContactResponseData> => {
   try {
     const response = await apiService.get<GetAllContactResponseData>(
@@ -60,6 +61,7 @@ export const deleteContact = async (id: string) => {
 
 export const updateContact = async (id: string, data: ContactRequestData) => {
   try {
+    console.log("data", data);
     const response = await apiService.put(`/contact/${id}`, data);
     return response;
   } catch (error) {
